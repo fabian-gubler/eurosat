@@ -45,7 +45,8 @@ import shutil
 from tqdm import tqdm
 
 
-basedir = "/home/fabian/eurosat/data/"
+prefix = "/home/paperspace"
+basedir = os.path.join(prefix, "eurosat/data/")
 
 # B1, B2, B3, B4, B5, B6, B7, B8, B8A, B9, B11, B12.
 

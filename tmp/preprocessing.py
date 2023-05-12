@@ -30,7 +30,8 @@ import os
 import numpy as np
 import rasterio
 
-basedir = "/home/fabian/eurosat/data/"
+prefix = "/home/paperspace"
+basedir = os.path.join(prefix, "eurosat/data")
 
 parent_input_folder = os.path.join(basedir, "EuroSAT_MS")
 parent_output_folder = os.path.join(basedir, "EuroSAT_MS_NPY")
