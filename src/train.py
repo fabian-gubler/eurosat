@@ -25,7 +25,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model = model.to(device)
 
 # Define base directory and batch size
-base_dir = "/home/fabian/eurosat/data/EuroSAT_MS_NPY_wo_B10_ordered_features_float32"
+base_dir = "/home/azureuser/eurosat/data/EuroSAT_MS_NPY_wo_B10_ordered_features_float32"
 
 # Parameters
 num_epochs = 20 # Adjust based on overfitting/underfitting observations
