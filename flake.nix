@@ -11,7 +11,13 @@
       let
         python = "python310"; # <--- change here
         pythonPackages = pkgs.python310Packages;# <--- change here
-        pkgs = import nixpkgs { inherit system; };
+        pkgs = import nixpkgs {
+          inherit system;
+          config = {
+            allowUnfree = true;
+            cudaSupport = true;
+          };
+        };
       in
       {
         devShell = pkgs.mkShell {
@@ -52,7 +58,7 @@
             ## Developer tools
             pkgs.black
             pythonPackages.flake8
-			pythonPackages.isort
+            pythonPackages.isort
             pkgs.nodePackages.pyright
 
 
