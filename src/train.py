@@ -28,7 +28,7 @@ model = model.to(device)
 
 # Define base directory and batch size
 prefix = "/data/eurosat/"
-# prefix = "/home/azureuser/eurosat/"
+prefix = "/home/paperspace/eurosat/"
 base_dir = os.path.join(prefix, "data/EuroSAT_MS_NPY_wo_B10_ordered_features_float32")
 
 
