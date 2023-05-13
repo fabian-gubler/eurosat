@@ -1,3 +1,8 @@
+# NOTES ON CUDA:
+# recommended to use cachix to reduce build times
+# $ nix-env -iA cachix -f https://cachix.org/api/v1/install
+# $ cachix use cuda-maintainers
+
 {
   description = "Data Science Configuration Flake";
 
@@ -40,6 +45,7 @@
             pythonPackages.pycairo
             pythonPackages.torch
             pythonPackages.torchvision
+			# pythonPackages.pytorch-lightning
             pythonPackages.pandas
             pythonPackages.pandas-datareader
             pythonPackages.openpyxl
@@ -71,6 +77,7 @@
             pkgs.libxslt
             pkgs.libzip
             pkgs.zlib
+			pkgs.zsh
 
             # Needed for Cuda Toolkit to work
             # pkgs.cudatoolkit 
@@ -91,11 +98,11 @@
             # pkgs.binutils
           ];
 
-#           shellHook = ''
-# export CUDA_PATH=${pkgs.cudatoolkit}
-# export EXTRA_CCFLAGS="-I/usr/include"
-# export EXTRA_LDFLAGS="-L/lib -L${pkgs.linuxPackages.nvidia_x11}/lib"
-#             		  '';
+          # shellHook = ''
+            # export CUDA_PATH=${pkgs.cudatoolkit}
+            # export EXTRA_CCFLAGS="-I/usr/include"
+            # export EXTRA_LDFLAGS="-L/lib -L${pkgs.linuxPackages.nvidia_x11}/lib"
+          # '';
 
           # Run this command, only after creating the virtual environment
           postVenvCreation = ''
@@ -113,7 +120,7 @@
             export MPLBACKEND=TkAgg
 
             # Create jupyter extension directory in case (optional)
-            mkdir -p $(jupyter --data-dir)/nbextensions
+            # mkdir -p $(jupyter --data-dir)/nbextensions
 
 
             # TODO: create vim-binding nix package
