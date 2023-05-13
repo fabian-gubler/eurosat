@@ -10,8 +10,11 @@
 
 # +
 # Assuming your data is stored in x and y
-x = np.load('/Users/svenschnydrig/Documents/Coding Challenge/data/preprocessed/x_std.npy')
-y = np.load('/Users/svenschnydrig/Documents/Coding Challenge/data/preprocessed/y.npy')
+x = np.load('/home/paperspace/eurosat/data/preprocessed/x_std.npy')
+y = np.load('/home/paperspace/eurosat/data/preprocessed/y.npy')
+
+# x = np.load('/Users/svenschnydrig/Documents/Coding Challenge/data/preprocessed/x_std.npy')
+# y = np.load('/Users/svenschnydrig/Documents/Coding Challenge/data/preprocessed/y.npy')
 
 # Split the dataset into train and test sets
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
