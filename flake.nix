@@ -13,10 +13,10 @@
         pythonPackages = pkgs.python310Packages;# <--- change here
         pkgs = import nixpkgs {
           inherit system;
-          config = {
-            allowUnfree = true;
-            cudaSupport = true;
-          };
+          # config = {
+          #   allowUnfree = true;
+          #   cudaSupport = true;
+          # };
         };
       in
       {
@@ -61,7 +61,6 @@
             pythonPackages.isort
             pkgs.nodePackages.pyright
 
-
             # In this particular example, in order to compile any binary extensions they may
             # require, the Python modules listed in the hypothetical requirements.txt need
             # the following packages to be installed locally:
@@ -72,6 +71,24 @@
             pkgs.libxslt
             pkgs.libzip
             pkgs.zlib
+
+            # Needed for Cuda Toolkit to work
+            # pkgs.cudatoolkit 
+            # pkgs.linuxPackages.nvidia_x11
+            # pkgs.cudaPackages.cudnn
+            # pkgs.libGLU 
+            # pkgs.ncurses5 
+            # pkgs.xorg.libXi 
+            # pkgs.xorg.libXext 
+            # pkgs.libGL
+            # pkgs.xorg.libXmu 
+            # pkgs.freeglut
+            # pkgs.xorg.libX11 
+            # pkgs.xorg.libXv 
+            # pkgs.xorg.libXrandr 
+            # pkgs.zlib 
+            # pkgs.stdenv.cc 
+            # pkgs.binutils
           ];
 
           # Run this command, only after creating the virtual environment
