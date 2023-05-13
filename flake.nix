@@ -91,6 +91,12 @@
             # pkgs.binutils
           ];
 
+#           shellHook = ''
+# export CUDA_PATH=${pkgs.cudatoolkit}
+# export EXTRA_CCFLAGS="-I/usr/include"
+# export EXTRA_LDFLAGS="-L/lib -L${pkgs.linuxPackages.nvidia_x11}/lib"
+#             		  '';
+
           # Run this command, only after creating the virtual environment
           postVenvCreation = ''
             unset SOURCE_DATE_EPOCH
@@ -99,24 +105,24 @@
           # Now we can execute any commands within the virtual environment.
           # This is optional and can be left out to run pip manually.
           postShellHook = ''
-                        			# allow pip to install wheels
-                        			unset SOURCE_DATE_EPOCH
+            # allow pip to install wheels
+            unset SOURCE_DATE_EPOCH
 
-            						# set plotting backend 
-            						# > matplotlib.use('WebAgg') (override with python inline)
-            						export MPLBACKEND=TkAgg
+            # set plotting backend 
+            # > matplotlib.use('WebAgg') (override with python inline)
+            export MPLBACKEND=TkAgg
 
-                                    # Create jupyter extension directory in case (optional)
-                        			mkdir -p $(jupyter --data-dir)/nbextensions
+            # Create jupyter extension directory in case (optional)
+            mkdir -p $(jupyter --data-dir)/nbextensions
 
 
-                        # TODO: create vim-binding nix package
-                        			# cd $(jupyter --data-dir)/nbextensions
-                        			# git clone https://github.com/lambdalisue/jupyter-vim-binding vim_binding
-                        			# jupyter nbextension enable vim_binding/vim_binding
+            # TODO: create vim-binding nix package
+            # cd $(jupyter --data-dir)/nbextensions
+            # git clone https://github.com/lambdalisue/jupyter-vim-binding vim_binding
+            # jupyter nbextension enable vim_binding/vim_binding
 
-                        # TODO: jupytext overlay to enable the serverextensiont
-                        			# jupyter serverextension enable jupytext
+            # TODO: jupytext overlay to enable the serverextensiont
+            # jupyter serverextension enable jupytext
 
           '';
         };
