@@ -2,4 +2,4 @@ azzedine/
 .venv/
 .direnv/
 data/EuroSAT*
-data/testset
+data/testset/
