@@ -12,7 +12,7 @@
 # ---
 
 # + colab={"base_uri": "https://localhost:8080/"} id="kL-QvJGgYmaW" outputId="f8da27b4-d707-45da-e4b1-78ad9b67e116"
-pip install nemo-toolkit['all']
+# pip install nemo-toolkit['all']
 
 # + colab={"base_uri": "https://localhost:8080/"} id="zJQ4W3pobWuL" outputId="63bdaea0-9e12-4a1c-c6aa-696682a7edb0"
 import nemo.collections.asr as nemo_asr
