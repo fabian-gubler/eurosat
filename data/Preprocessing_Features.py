@@ -268,8 +268,8 @@ x_testset_original = x_testset.copy()
 x[..., :12] = x[..., :12] / 28000.0
 x_testset[..., :12] = x_testset[..., :12] / 28000.0
 
-np.save('/home/paperspace/eursat/data/preprocessed/x_28k.npy', x)
-np.save('/home/paperspace/eursat/data/preprocessed/x_testset_28k.npy', x_testset)
+np.save('/home/paperspace/eurosat/data/preprocessed/x_28k.npy', x)
+np.save('/home/paperspace/eurosat/data/preprocessed/x_testset_28k.npy', x_testset)
 
 # np.save('/Users/svenschnydrig/Documents/Coding Challenge/data/preprocessed/x_28k.npy', x)
 # np.save('/Users/svenschnydrig/Documents/Coding Challenge/data/preprocessed/x_testset_28k.npy', x_testset)
@@ -287,8 +287,8 @@ for i in range(12):
     x[..., i] = x[..., i] / max_val
     x_testset[..., i] = x_testset[..., i] / max_val
 
-np.save('/home/paperspace/eursat/data/preprocessed/x_max.npy', x)
-np.save('/home/paperspace/eursat/data/preprocessed/x_testset_max.npy', x_testset)
+np.save('/home/paperspace/eurosat/data/preprocessed/x_max.npy', x)
+np.save('/home/paperspace/eurosat/data/preprocessed/x_testset_max.npy', x_testset)
 
 # np.save('/Users/svenschnydrig/Documents/Coding Challenge/data/preprocessed/x_max.npy', x)
 # np.save('/Users/svenschnydrig/Documents/Coding Challenge/data/preprocessed/x_testset_max.npy', x_testset)
@@ -304,7 +304,7 @@ for i in range(12):
     max_val = np.max(x_testset[..., i])
     x_testset[..., i] = x_testset[..., i] / max_val
 
-np.save('/home/paperspace/eursat/data/preprocessed/x_testset_max_test.npy', x_testset)
+np.save('/home/paperspace/eurosat/data/preprocessed/x_testset_max_test.npy', x_testset)
 # np.save('/Users/svenschnydrig/Documents/Coding Challenge/data/preprocessed/x_testset_max_test.npy', x_testset)
 # -
 
@@ -322,8 +322,8 @@ max_vals = np.max(x[..., :12], axis=(0, 1, 2), keepdims=True)
 x[..., :12] = (x[..., :12] - min_vals) / (max_vals - min_vals)
 x_testset[..., :12] = (x_testset[..., :12] - min_vals) / (max_vals - min_vals)
 
-np.save('/home/paperspace/eursat/data/preprocessed/x_minmax_0_1.npy', x)
-np.save('/home/paperspace/eursat/data/preprocessed/x_testset_minmax_0_1.npy', x_testset)
+np.save('/home/paperspace/eurosat/data/preprocessed/x_minmax_0_1.npy', x)
+np.save('/home/paperspace/eurosat/data/preprocessed/x_testset_minmax_0_1.npy', x_testset)
 # np.save('/Users/svenschnydrig/Documents/Coding Challenge/data/preprocessed/x_minmax_0_1.npy', x)
 # np.save('/Users/svenschnydrig/Documents/Coding Challenge/data/preprocessed/x_testset_minmax_0_1.npy', x_testset)
 # -
@@ -343,8 +343,8 @@ max_vals = np.max(x[..., :12], axis=(0, 1, 2), keepdims=True)
 x[..., :12] = 2 * ((x[..., :12] - min_vals) / (max_vals - min_vals)) - 1
 x_testset[..., :12] = 2 * ((x_testset[..., :12] - min_vals) / (max_vals - min_vals)) - 1
 
-np.save('/home/paperspace/eursat/data/preprocessed/x_minmax_-1_1.npy', x)
-np.save('/home/paperspace/eursat/data/preprocessed/x_testset_minmax_-1_1.npy', x_testset)
+np.save('/home/paperspace/eurosat/data/preprocessed/x_minmax_-1_1.npy', x)
+np.save('/home/paperspace/eurosat/data/preprocessed/x_testset_minmax_-1_1.npy', x_testset)
 # np.save('/Users/svenschnydrig/Documents/Coding Challenge/data/preprocessed/x_minmax_-1_1.npy', x)
 # np.save('/Users/svenschnydrig/Documents/Coding Challenge/data/preprocessed/x_testset_minmax_-1_1.npy', x_testset)
 # -
@@ -363,8 +363,8 @@ std_vals = np.std(x[..., :12], axis=(0, 1, 2), keepdims=True)
 x[..., :12] = (x[..., :12] - mean_vals) / std_vals
 x_testset[..., :12] = (x_testset[..., :12] - mean_vals) / std_vals
 
-np.save('/home/paperspace/eursat/data/preprocessed/x_std.npy', x)
-np.save('/home/paperspace/eursat/data/preprocessed/x_testset_std.npy', x_testset)
+np.save('/home/paperspace/eurosat/data/preprocessed/x_std.npy', x)
+np.save('/home/paperspace/eurosat/data/preprocessed/x_testset_std.npy', x_testset)
 
 # np.save('/Users/svenschnydrig/Documents/Coding Challenge/data/preprocessed/x_std.npy', x)
 # np.save('/Users/svenschnydrig/Documents/Coding Challenge/data/preprocessed/x_testset_std.npy', x_testset)
@@ -386,8 +386,8 @@ max_vals = np.max(x, axis=(0, 1, 2), keepdims=True)
 x = (x - min_vals) / (max_vals - min_vals)
 x_testset = (x_testset - min_vals) / (max_vals - min_vals)
 
-np.save('/home/paperspace/eursat/data/preprocessed/x_minmax_0_1_all.npy', x)
-np.save('/home/paperspace/eursat/data/preprocessed/x_testset_minmax_0_1_all.npy', x_testset)
+np.save('/home/paperspace/eurosat/data/preprocessed/x_minmax_0_1_all.npy', x)
+np.save('/home/paperspace/eurosat/data/preprocessed/x_testset_minmax_0_1_all.npy', x_testset)
 
 # np.save('/Users/svenschnydrig/Documents/Coding Challenge/data/preprocessed/x_minmax_0_1_all.npy', x)
 # np.save('/Users/svenschnydrig/Documents/Coding Challenge/data/preprocessed/x_testset_minmax_0_1_all.npy', x_testset)
@@ -407,8 +407,8 @@ std_vals = np.std(x, axis=(0, 1, 2), keepdims=True)
 x = (x - mean_vals) / std_vals
 x_testset = (x_testset - mean_vals) / std_vals
 
-np.save('/home/paperspace/eursat/data/preprocessed/x_std_all.npy', x)
-np.save('/home/paperspace/eursat/data/preprocessed/x_testset_std_all.npy', x_testset)
+np.save('/home/paperspace/eurosat/data/preprocessed/x_std_all.npy', x)
+np.save('/home/paperspace/eurosat/data/preprocessed/x_testset_std_all.npy', x_testset)
 
 # np.save('/Users/svenschnydrig/Documents/Coding Challenge/data/preprocessed/x_std_all.npy', x)
 # np.save('/Users/svenschnydrig/Documents/Coding Challenge/data/preprocessed/x_testset_std_all.npy', x_testset)
