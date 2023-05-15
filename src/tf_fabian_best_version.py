@@ -4,6 +4,7 @@ from tensorflow.keras.layers import Input, GlobalAveragePooling2D, Dense
 from tensorflow.keras.models import Model
 from tensorflow.keras.applications import ResNet50
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.layers import Dropout
 import tensorflow as tf
 from tqdm.keras import TqdmCallback
 from tensorflow.keras import regularizers
