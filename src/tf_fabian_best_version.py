@@ -17,9 +17,11 @@ y = np.load("/home/paperspace/eurosat/preprocessed/y.npy")
 print(f"Original shape of x: {x.shape}")
 
 
-# Delete B1 (at index 0)
+# Delete B1 (at index 0) and three other bands (let's assume at indices 8, 9, and 10)
 x = np.delete(x, 0, axis=3)
 x = np.delete(x, 8, axis=3)
+x = np.delete(x, 9, axis=3)
+x = np.delete(x, 10, axis=3)
 
 # Check the shape of the input data after deleting the bands
 print(f"Shape of x after deleting the bands: {x.shape}")
