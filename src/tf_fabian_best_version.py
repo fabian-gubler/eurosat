@@ -15,6 +15,7 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.applications import ResNet50
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import tensorflow as tf
+from tqdm.keras import TqdmCallback
 
 # +
 # Assuming your data is stored in x and y
@@ -74,7 +75,8 @@ model.fit(datagen.flow(x_train, y_train, batch_size=batch_size),
           steps_per_epoch=len(x_train) // batch_size,
           validation_data=(x_test, y_test),
           epochs=epochs,
-          callbacks=[checkpoint_callback, early_stopping_callback])  
+          callbacks=[TqdmCallback(verbose=1), checkpoint_callback, early_stopping_callback],
+          verbose=0)  # set verbose=0 to prevent standard output
 
 # Save the model
 model.save('resnet50_x_test.h5')
