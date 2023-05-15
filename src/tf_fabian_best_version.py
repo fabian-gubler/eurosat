@@ -1,4 +1,5 @@
 import numpy as np
+import time
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.layers import Input, GlobalAveragePooling2D, Dense
 from tensorflow.keras.models import Model
@@ -118,7 +119,9 @@ early_stopping_callback = tf.keras.callbacks.EarlyStopping(
 
 batch_size = 256
 
-epochs = 20
+epochs = 10
+
+start_time = time.time()
 
 model.fit(
     datagen.flow(x_train, y_train, batch_size=batch_size),
@@ -129,7 +132,10 @@ model.fit(
     verbose=0,
 )  # set verbose=0 to prevent standard output
 
+elapsed_time = time.time() - start_time
+with open("training_time_log.txt", "a") as log_file:
+    log_file.write(f"Training time: {elapsed_time} seconds\n")
 
 # Save the model
 
-# model.save('resnet50.h5')
+model.save('resnet50.h5')
