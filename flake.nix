@@ -39,27 +39,27 @@
 
             # Dependencies that we would like to use from nixpkgs, which will
             # add them to PYTHONPATH and thus make them accessible from within the venv.
-            pythonPackages.numpy
-            pythonPackages.pandas
-            pythonPackages.matplotlib
-            pythonPackages.pycairo
-            pythonPackages.torch
-            pythonPackages.torchvision
+            # pythonPackages.numpy
+            # pythonPackages.pandas
+            # pythonPackages.matplotlib
+            # pythonPackages.pycairo
+            # pythonPackages.torch
+            # pythonPackages.torchvision
 			# pythonPackages.pytorch-lightning
-            pythonPackages.pandas
-            pythonPackages.pandas-datareader
-            pythonPackages.openpyxl
-            pythonPackages.scikit-learn
-            pythonPackages.scipy
-            pythonPackages.scikitimage
-            pythonPackages.seaborn
-            pythonPackages.rasterio
+            # pythonPackages.pandas
+            # pythonPackages.pandas-datareader
+            # pythonPackages.openpyxl
+            # pythonPackages.scikit-learn
+            # pythonPackages.scipy
+            # pythonPackages.scikitimage
+            # pythonPackages.seaborn
+            # pythonPackages.rasterio
 
             ## Jupyter notebook essentials
-            pythonPackages.jupytext
-            pythonPackages.ipython
-            pythonPackages.jupyter
-            pythonPackages.jupyterlab
+            # pythonPackages.jupytext
+            # pythonPackages.ipython
+            # pythonPackages.jupyter
+            # pythonPackages.jupyterlab
 
             ## Developer tools
             pkgs.black
@@ -70,14 +70,14 @@
             # In this particular example, in order to compile any binary extensions they may
             # require, the Python modules listed in the hypothetical requirements.txt need
             # the following packages to be installed locally:
-            pkgs.taglib
-            pkgs.openssl
-            pkgs.git
-            pkgs.libxml2
-            pkgs.libxslt
-            pkgs.libzip
-            pkgs.zlib
-			pkgs.zsh
+			# pkgs.taglib
+			# pkgs.openssl
+			# pkgs.git
+			# pkgs.libxml2
+			# pkgs.libxslt
+			# pkgs.libzip
+			# pkgs.zlib
+			# pkgs.zsh
 
             # Needed for Cuda Toolkit to work
             # pkgs.cudatoolkit 
