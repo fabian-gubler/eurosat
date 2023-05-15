@@ -14,47 +14,36 @@ from tensorflow.keras.layers import Dropout
 import tensorflow as tf
 from tensorflow.keras import regularizers
 
-user = "ubuntu"
 
 # Assuming your data is stored in x and y
+user = "ubuntu"
 x = np.load(f"/home/{user}/eurosat/preprocessed/x_std.npy")
 y = np.load(f"/home/{user}/eurosat/preprocessed/y.npy")
-
-# Check the shape of the input data
-print(f"Original shape of x: {x.shape}")
 
 
 # Delete B1 (at index 0) and three other bands (let's assume at indices 8, 9, and 10)
 x = np.delete(x, 0, axis=3)
 x = np.delete(x, 8, axis=3)
-# x = np.delete(x, 9, axis=3)
-# x = np.delete(x, 10, axis=3)
-
-# Check the shape of the input data after deleting the bands
-print(f"Shape of x after deleting the bands: {x.shape}")
 
 # Ensure that the depth of the input data is 16 after deleting the bands
 assert x.shape[3] == 18, "The depth of the input data must be 16"
 
 # Split the dataset into train and test sets
-
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, test_size=0.2, random_state=42
 )
 
 
 # Create a custom input layer for the 64x64x20 input
-
 input_layer = Input(shape=(64, 64, 18))
 
 
 # Load the ResNet50 model without the top classification layer and with custom input
-
-base_model = ResNet50(weights=None, include_top=False, input_tensor=input_layer)
+# base_model = ResNet50(weights=None, include_top=False, input_tensor=input_layer)
+base_model = ResNet50(weights='imagenet', include_top=False, input_tensor=input_layer)
 
 
 # Add a custom classification layer
-
 x = base_model.output
 x = GlobalAveragePooling2D()(x)
 x = Dense(1024, activation="relu")(x)  # additional fully-connected layer
@@ -101,7 +90,6 @@ datagen = ImageDataGenerator(
 
 
 # Define the checkpoint callback
-
 checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
     filepath="resnet50_std_wo_deeper_batch_128.h5",
     monitor="val_accuracy",
@@ -112,16 +100,13 @@ checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
 )
 
 # Define the early stopping callback
-
 early_stopping_callback = tf.keras.callbacks.EarlyStopping(
     monitor="val_accuracy", mode="max", patience=5, verbose=1, restore_best_weights=True
 )
 
 
 # Fit the model with the augmented data
-
 batch_size = 256
-
 epochs = 10
 
 start_time = time.time()
