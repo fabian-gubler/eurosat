@@ -1,15 +1,15 @@
 import numpy as np
-from sklearn.model_selection import train_test_split
-from tensorflow.keras.layers import Input, GlobalAveragePooling2D, Dense
-from tensorflow.keras.models import Model
-from tensorflow.keras.applications import ResNet50
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.layers import Dropout
 import tensorflow as tf
-from tqdm.keras import TqdmCallback
+from sklearn.model_selection import train_test_split
 from tensorflow.keras import regularizers
+from tensorflow.keras.applications import ResNet50
+from tensorflow.keras.layers import (Dense, Dropout, GlobalAveragePooling2D,
+                                     Input)
+from tensorflow.keras.models import Model
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tqdm.keras import TqdmCallback
 
-user = "ubuntu"
+user = "paperspace"
 
 # Assuming your data is stored in x and y
 x = np.load(f"/home/{user}/eurosat/preprocessed/x_std.npy")
@@ -49,15 +49,10 @@ base_model = ResNet50(weights=None, include_top=False, input_tensor=input_layer)
 # Add a custom classification layer
 
 x = base_model.output
-
 x = GlobalAveragePooling2D()(x)
-
 x = Dense(1024, activation="relu")(x)  # additional fully-connected layer
-
 x = Dropout(0.2)(x)  # dropout for regularization, 0.1-0.5, start small
-
 x = Dense(1024, activation="relu")(x)  # additional fully-connected layer
-
 x = Dropout(0.2)(x)  # dropout for regularization, 0.1-0.5, start small
 
 # x = Dense(1024, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.01))(x)  # L2 regularization with a factor of 0.01, 0.0001 to 0.1, start small
@@ -129,4 +124,4 @@ model.fit(
 
 # Save the model
 
-model.save('resnet50.h5')
+model.save("resnet50.h5")
