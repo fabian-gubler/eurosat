@@ -13,11 +13,19 @@ from tensorflow.keras import regularizers
 x = np.load("/home/paperspace/eurosat/preprocessed/x_std.npy")
 y = np.load("/home/paperspace/eurosat/preprocessed/y.npy")
 
+# Check the shape of the input data
+print(f"Original shape of x: {x.shape}")
+
 
 # Delete B1 (at index 0)
 x = np.delete(x, 0, axis=3)
 x = np.delete(x, 8, axis=3)
 
+# Check the shape of the input data after deleting the bands
+print(f"Shape of x after deleting the bands: {x.shape}")
+
+# Ensure that the depth of the input data is 16 after deleting the bands
+assert x.shape[3] == 16, "The depth of the input data must be 16"
 
 # Split the dataset into train and test sets
 
