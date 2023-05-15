@@ -19,7 +19,7 @@ y = np.load(f"/home/{user}/eurosat/preprocessed/y.npy")
 print(f"Original shape of x: {x.shape}")
 
 # Reduce the data size for faster experimentation, use only 10% of data
-# x, _, y, _ = train_test_split(x, y, test_size=0.9, random_state=42)
+x, _, y, _ = train_test_split(x, y, test_size=0.9, random_state=42)
 
 # Delete B1 (at index 0) and three other bands (let's assume at indices 8, 9, and 10)
 x = np.delete(x, 0, axis=3)
@@ -39,7 +39,6 @@ x_train, x_test, y_train, y_test = train_test_split(
 
 
 # Create a custom input layer for the 64x64x20 input
-
 input_layer = Input(shape=(64, 64, 18))
 
 

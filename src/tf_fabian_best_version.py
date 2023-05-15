@@ -18,6 +18,7 @@ y = np.load(f"/home/{user}/eurosat/preprocessed/y.npy")
 # Check the shape of the input data
 print(f"Original shape of x: {x.shape}")
 
+x, _, y, _ = train_test_split(x, y, test_size=0.9, random_state=42)
 
 # Delete B1 (at index 0) and three other bands (let's assume at indices 8, 9, and 10)
 x = np.delete(x, 0, axis=3)
