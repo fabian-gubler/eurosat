@@ -1,13 +1,17 @@
 import numpy as np
 import time
+from datetime import datetime
+from pathlib import Path
+
 from sklearn.model_selection import train_test_split
+from tqdm.keras import TqdmCallback
+
 from tensorflow.keras.layers import Input, GlobalAveragePooling2D, Dense
 from tensorflow.keras.models import Model
 from tensorflow.keras.applications import ResNet50
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.layers import Dropout
 import tensorflow as tf
-from tqdm.keras import TqdmCallback
 from tensorflow.keras import regularizers
 
 user = "ubuntu"
@@ -72,13 +76,12 @@ model = Model(inputs=input_layer, outputs=predictions)
 # Compile the model
 
 lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
-    initial_learning_rate=0.003,
-    decay_steps=10000,
-    decay_rate=0.9)
+    initial_learning_rate=0.003, decay_steps=10000, decay_rate=0.9
+)
 
 model.compile(
     # optimizer=tf.keras.optimizers.legacy.SGD(learning_rate=0.003),
-    optimizer = tf.keras.optimizers.SGD(learning_rate=lr_schedule),
+    optimizer=tf.keras.optimizers.SGD(learning_rate=lr_schedule),
     loss="categorical_crossentropy",
     metrics=["accuracy"],
 )
@@ -138,4 +141,9 @@ with open("training_time_log.txt", "a") as log_file:
 
 # Save the model
 
-model.save('resnet50.h5')
+# create the models directory if it doesn't exist
+Path("models").mkdir(parents=True, exist_ok=True)
+
+# save model
+model_path = f"models/resnet50_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pth"
+model.save(model_path)

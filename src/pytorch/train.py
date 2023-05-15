@@ -103,6 +103,8 @@ print('Training complete.')
 model_save_dir = "../models"
 model_save_path = os.path.join(model_save_dir, "resnet18.pth")
 
+
+
 # Ensure the directory exists
 os.makedirs(model_save_dir, exist_ok=True)
 
