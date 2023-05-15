@@ -8,6 +8,8 @@
 #       jupytext_version: 1.14.2-dev
 # ---
 
+import numpy as np
+
 # +
 # Assuming your data is stored in x and y
 x = np.load('/home/paperspace/eurosat/preprocessed/x_std.npy')
