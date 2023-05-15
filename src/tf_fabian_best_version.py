@@ -1,11 +1,14 @@
-import numpy as np
+# system
 import time
 from datetime import datetime
 from pathlib import Path
 
+# utils
+import numpy as np
 from sklearn.model_selection import train_test_split
 from tqdm.keras import TqdmCallback
 
+# sven
 from tensorflow.keras.layers import Input, GlobalAveragePooling2D, Dense
 from tensorflow.keras.models import Model
 from tensorflow.keras.applications import ResNet50
@@ -14,6 +17,13 @@ from tensorflow.keras.layers import Dropout
 import tensorflow as tf
 from tensorflow.keras import regularizers
 
+# custom
+from tensorflow.keras.layers import BatchNormalization
+from tensorflow.keras.callbacks import EarlyStopping
+
+# ---------------------------------------------------------
+# LOAD DATA
+# ---------------------------------------------------------
 
 # Assuming your data is stored in x and y
 user = "ubuntu"
@@ -34,6 +44,11 @@ x_train, x_test, y_train, y_test = train_test_split(
 )
 
 
+# ---------------------------------------------------------
+# Define Model
+# ---------------------------------------------------------
+
+
 # Create a custom input layer for the 64x64x20 input
 input_layer = Input(shape=(64, 64, 18))
 
@@ -42,50 +57,47 @@ input_layer = Input(shape=(64, 64, 18))
 # base_model = ResNet50(weights=None, include_top=False, input_tensor=input_layer)
 base_model = ResNet50(weights='imagenet', include_top=False, input_tensor=input_layer)
 
-
 # Add a custom classification layer
 x = base_model.output
 x = GlobalAveragePooling2D()(x)
-x = Dense(1024, activation="relu")(x)  # additional fully-connected layer
-x = Dropout(0.2)(x)  # dropout for regularization, 0.1-0.5, start small
-x = Dense(1024, activation="relu")(x)  # additional fully-connected layer
-x = Dropout(0.2)(x)  # dropout for regularization, 0.1-0.5, start small
-
-# x = Dense(1024, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.01))(x)  # L2 regularization with a factor of 0.01, 0.0001 to 0.1, start small
-
-
-predictions = Dense(y.shape[1], activation="softmax")(x)
+x = BatchNormalization()(x)  # Add BatchNormalization layer # <--- new
+x = Dense(1024, activation="relu")(x)
+x = Dropout(0.2)(x)
+x = BatchNormalization()(x)  # Add BatchNormalization layer # <--- new
+x = Dense(1024, activation="relu")(x)
+x = Dropout(0.2)(x)
 
 
 # Create the final model
-
+predictions = Dense(y.shape[1], activation="softmax")(x)
 model = Model(inputs=input_layer, outputs=predictions)
 
+# ---------------------------------------------------------
+# Compile Model
+# ---------------------------------------------------------
 
 # Compile the model
-
-lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
+lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay( # <--- new
     initial_learning_rate=0.003, decay_steps=10000, decay_rate=0.9
 )
 
 model.compile(
     # optimizer=tf.keras.optimizers.legacy.SGD(learning_rate=0.003),
-    optimizer=tf.keras.optimizers.SGD(learning_rate=lr_schedule),
+    optimizer=tf.keras.optimizers.SGD(learning_rate=lr_schedule), # <--- new
     loss="categorical_crossentropy",
     metrics=["accuracy"],
 )
 
 
 # Create data augmentation generator
-
-datagen = ImageDataGenerator(
+datagen = ImageDataGenerator( # <--- uncommented augmentations
     rotation_range=20,
     shear_range=0.2,  # added shear transformation
-    # width_shift_range=0.2,
-    # height_shift_range=0.2,
-    # horizontal_flip=True,
-    # vertical_flip=True,
-    # zoom_range=0.2,  # added zoom
+    width_shift_range=0.2,
+    height_shift_range=0.2,
+    horizontal_flip=True,
+    vertical_flip=True,
+    zoom_range=0.2, # added zoom
 )
 
 
@@ -99,16 +111,19 @@ checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
     verbose=1,
 )
 
+
 # Define the early stopping callback
 early_stopping_callback = tf.keras.callbacks.EarlyStopping(
     monitor="val_accuracy", mode="max", patience=5, verbose=1, restore_best_weights=True
 )
 
+# ---------------------------------------------------------
+# FIT Model
+# ---------------------------------------------------------
 
 # Fit the model with the augmented data
-batch_size = 256
-epochs = 10
-
+batch_size = 256 # <--- doubled
+epochs = 20
 start_time = time.time()
 
 model.fit(
@@ -124,7 +139,9 @@ elapsed_time = time.time() - start_time
 with open("training_time_log.txt", "a") as log_file:
     log_file.write(f"Training time: {elapsed_time} seconds\n")
 
-# Save the model
+# ---------------------------------------------------------
+# SAVE Model
+# ---------------------------------------------------------
 
 # create the models directory if it doesn't exist
 Path("models").mkdir(parents=True, exist_ok=True)
