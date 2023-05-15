@@ -44,7 +44,7 @@ input_layer = Input(shape=(64, 64, 18))
 
 
 # Load the ResNet50 model without the top classification layer and with custom input
-base_model = ResNet50(weights=None, include_top=False, input_tensor=input_layer)
+base_model = ResNet50(weights='imagenet', include_top=False, input_tensor=input_layer)
 
 
 # Add a custom classification layer
@@ -84,6 +84,16 @@ model.compile(
 
 
 # Create data augmentation generator
+datagen = ImageDataGenerator(
+    rotation_range=20,
+    width_shift_range=0.2,
+    height_shift_range=0.2,
+    shear_range=0.2,
+    zoom_range=0.2,
+    horizontal_flip=True,
+    vertical_flip=True,
+    fill_mode='nearest'
+)
 
 # Compile the model
 
@@ -95,7 +105,6 @@ model.compile(
 
 
 # Define the checkpoint callback
-
 checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
     filepath="resnet50_std_wo_deeper_batch_128.h5",
     monitor="val_accuracy",
@@ -105,10 +114,9 @@ checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
     verbose=1,
 )
 
-# Define the early stopping callback
-
+# Define the early stopping callback with patience=3 for faster experimentation
 early_stopping_callback = tf.keras.callbacks.EarlyStopping(
-    monitor="val_accuracy", mode="max", patience=5, verbose=1, restore_best_weights=True
+    monitor="val_accuracy", mode="max", patience=3, verbose=1, restore_best_weights=True
 )
 
 
@@ -127,7 +135,5 @@ model.fit(
     verbose=0,
 )  # set verbose=0 to prevent standard output
 
-
 # Save the model
-
-model.save("resnet50.h5")
+model.save('resnet50.h5')
