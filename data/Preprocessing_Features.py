@@ -109,7 +109,7 @@ import re
 x_testset = []
 
 # specify the directory you want to load from
-directory = '/home/paperspace/eurosat/data/testset/test'
+directory = '/home/paperspace/eurosat/data/testset'
 # directory = '/Users/svenschnydrig/Documents/Coding Challenge/data/testset/test'
 
 # function to convert a filename to a number (ignoring the .npy extension)

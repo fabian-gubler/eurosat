@@ -3,3 +3,4 @@ azzedine/
 .direnv/
 data/EuroSAT*
 data/testset/
+data/preprocessed/
