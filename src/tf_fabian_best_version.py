@@ -51,15 +51,10 @@ base_model = ResNet50(weights=None, include_top=False, input_tensor=input_layer)
 # Add a custom classification layer
 
 x = base_model.output
-
 x = GlobalAveragePooling2D()(x)
-
 x = Dense(1024, activation="relu")(x)  # additional fully-connected layer
-
 x = Dropout(0.2)(x)  # dropout for regularization, 0.1-0.5, start small
-
 x = Dense(1024, activation="relu")(x)  # additional fully-connected layer
-
 x = Dropout(0.2)(x)  # dropout for regularization, 0.1-0.5, start small
 
 # x = Dense(1024, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.01))(x)  # L2 regularization with a factor of 0.01, 0.0001 to 0.1, start small
@@ -75,8 +70,14 @@ model = Model(inputs=input_layer, outputs=predictions)
 
 # Compile the model
 
+lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
+    initial_learning_rate=0.003,
+    decay_steps=10000,
+    decay_rate=0.9)
+
 model.compile(
-    optimizer=tf.keras.optimizers.legacy.SGD(learning_rate=0.003),
+    # optimizer=tf.keras.optimizers.legacy.SGD(learning_rate=0.003),
+    optimizer = tf.keras.optimizers.SGD(learning_rate=lr_schedule),
     loss="categorical_crossentropy",
     metrics=["accuracy"],
 )
@@ -115,7 +116,7 @@ early_stopping_callback = tf.keras.callbacks.EarlyStopping(
 
 # Fit the model with the augmented data
 
-batch_size = 128
+batch_size = 256
 
 epochs = 20
 
