@@ -8,3 +8,5 @@ data/preprocessed_additional/
 src/models/
 *.zip
 *.pth/
+h5
+h5/
