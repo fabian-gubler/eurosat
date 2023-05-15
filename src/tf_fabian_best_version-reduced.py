@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 from tensorflow.keras import regularizers
 from tensorflow.keras.applications import ResNet50
 from tensorflow.keras.layers import (Dense, Dropout, GlobalAveragePooling2D,
-                                     Input)
+                                     Input, BatchNormalization)
 from tensorflow.keras.models import Model
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tqdm.keras import TqdmCallback
@@ -18,6 +18,8 @@ y = np.load(f"/home/{user}/eurosat/preprocessed/y.npy")
 # Check the shape of the input data
 print(f"Original shape of x: {x.shape}")
 
+# Reduce the data size for faster experimentation, use only 10% of data
+x, _, y, _ = train_test_split(x, y, test_size=0.9, random_state=42)
 
 # Delete B1 (at index 0) and three other bands (let's assume at indices 8, 9, and 10)
 x = np.delete(x, 0, axis=3)
@@ -42,18 +44,18 @@ input_layer = Input(shape=(64, 64, 18))
 
 
 # Load the ResNet50 model without the top classification layer and with custom input
-
 base_model = ResNet50(weights=None, include_top=False, input_tensor=input_layer)
 
 
 # Add a custom classification layer
-
 x = base_model.output
 x = GlobalAveragePooling2D()(x)
-x = Dense(1024, activation="relu")(x)  # additional fully-connected layer
-x = Dropout(0.2)(x)  # dropout for regularization, 0.1-0.5, start small
-x = Dense(1024, activation="relu")(x)  # additional fully-connected layer
-x = Dropout(0.2)(x)  # dropout for regularization, 0.1-0.5, start small
+x = Dense(1024, activation="relu")(x)
+x = BatchNormalization()(x)  # added batch normalization
+x = Dropout(0.2)(x)
+x = Dense(1024, activation="relu")(x)
+x = BatchNormalization()(x)  # added batch normalization
+x = Dropout(0.2)(x)
 
 # x = Dense(1024, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.01))(x)  # L2 regularization with a factor of 0.01, 0.0001 to 0.1, start small
 
@@ -66,26 +68,29 @@ predictions = Dense(y.shape[1], activation="softmax")(x)
 model = Model(inputs=input_layer, outputs=predictions)
 
 
+# Create a learning rate schedule
+lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
+    initial_learning_rate=0.003,
+    decay_steps=10000,
+    decay_rate=0.9)
+
+# Compile the model with SGD and learning rate schedule
+model.compile(
+    optimizer=tf.keras.optimizers.legacy.SGD(learning_rate=lr_schedule),
+    loss="categorical_crossentropy",
+    metrics=["accuracy"],
+)
+
+
+
+# Create data augmentation generator
+
 # Compile the model
 
 model.compile(
     optimizer=tf.keras.optimizers.legacy.SGD(learning_rate=0.003),
     loss="categorical_crossentropy",
     metrics=["accuracy"],
-)
-
-
-# Create data augmentation generator
-
-datagen = ImageDataGenerator(
-    rotation_range=20,
-    width_shift_range=0.2,
-    height_shift_range=0.2,
-    shear_range=0.2,
-    zoom_range=0.2,
-    horizontal_flip=True,
-    vertical_flip=True,
-    fill_mode='nearest'
 )
 
 
