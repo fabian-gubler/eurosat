@@ -9,9 +9,11 @@ import tensorflow as tf
 from tqdm.keras import TqdmCallback
 from tensorflow.keras import regularizers
 
+user = "ubuntu"
+
 # Assuming your data is stored in x and y
-x = np.load("/home/paperspace/eurosat/preprocessed/x_std.npy")
-y = np.load("/home/paperspace/eurosat/preprocessed/y.npy")
+x = np.load(f"/home/{user}/eurosat/preprocessed/x_std.npy")
+y = np.load(f"/home/{user}/eurosat/preprocessed/y.npy")
 
 # Check the shape of the input data
 print(f"Original shape of x: {x.shape}")
