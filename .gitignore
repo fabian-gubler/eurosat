@@ -5,4 +5,5 @@ data/EuroSAT*
 data/testset/
 data/preprocessed/
 data/preprocessed_additional/
+src/models/*
 *.zip
