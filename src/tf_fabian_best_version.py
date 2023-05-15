@@ -22,14 +22,12 @@ print(f"Original shape of x: {x.shape}")
 # Delete B1 (at index 0) and three other bands (let's assume at indices 8, 9, and 10)
 x = np.delete(x, 0, axis=3)
 x = np.delete(x, 8, axis=3)
-x = np.delete(x, 9, axis=3)
-x = np.delete(x, 10, axis=3)
 
 # Check the shape of the input data after deleting the bands
 print(f"Shape of x after deleting the bands: {x.shape}")
 
 # Ensure that the depth of the input data is 16 after deleting the bands
-assert x.shape[3] == 16, "The depth of the input data must be 16"
+assert x.shape[3] == 18, "The depth of the input data must be 18"
 
 # Split the dataset into train and test sets
 
@@ -40,7 +38,7 @@ x_train, x_test, y_train, y_test = train_test_split(
 
 # Create a custom input layer for the 64x64x20 input
 
-input_layer = Input(shape=(64, 64, 16))
+input_layer = Input(shape=(64, 64, 18))
 
 
 # Load the ResNet50 model without the top classification layer and with custom input
