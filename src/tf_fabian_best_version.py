@@ -53,13 +53,13 @@ x = base_model.output
 
 x = GlobalAveragePooling2D()(x)
 
-x = Dense(1024, activation='relu')(x)  # additional fully-connected layer
+x = Dense(1024, activation='relu')(x) # additional fully-connected layer
 
-x = Dropout(0.2)(x)  # dropout for regularization, 0.1-0.5, start small
+x = Dropout(0.2)(x) # dropout for regularization, 0.1-0.5, start small
 
-x = Dense(1024, activation='relu')(x)  # additional fully-connected layer
+x = Dense(1024, activation='relu')(x) # additional fully-connected layer
 
-x = Dropout(0.2)(x)  # dropout for regularization, 0.1-0.5, start small
+x = Dropout(0.2)(x) # dropout for regularization, 0.1-0.5, start small
 
 #x = Dense(1024, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.01))(x)  # L2 regularization with a factor of 0.01, 0.0001 to 0.1, start small
 
@@ -89,19 +89,19 @@ model.compile(optimizer=tf.keras.optimizers.legacy.SGD(learning_rate=0.003), los
 
 datagen = ImageDataGenerator(
 
-    rotation_range=20,
+    rotation_range=20,
 
-    shear_range=0.2,  # added shear transformation
+    shear_range=0.2, # added shear transformation
 
-    #width_shift_range=0.2,
+#width_shift_range=0.2,
 
-    #height_shift_range=0.2,
+#height_shift_range=0.2,
 
-    #horizontal_flip=True,
+#horizontal_flip=True,
 
-    #vertical_flip=True,
+#vertical_flip=True,
 
-    #zoom_range=0.2,  # added zoom
+#zoom_range=0.2,  # added zoom
 
 )
 
