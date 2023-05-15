@@ -5,6 +5,6 @@ data/EuroSAT*
 data/testset/
 preprocessed/
 data/preprocessed_additional/
-src/models/*
+src/models/
 *.zip
 *.pth/
