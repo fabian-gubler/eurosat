@@ -16,7 +16,7 @@ from tensorflow.keras.applications.resnet50 import preprocess_input
 import tensorflow_datasets as tfds
 
 
-user = "paperspace"
+user = "ubuntu"
 
 print("loading data...")
 
