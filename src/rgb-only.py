@@ -11,9 +11,13 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tqdm.keras import TqdmCallback
 
+user = "paperspace"
+
+print("loading data...")
+
 # Assuming your data is stored in x and y
-x = np.load('/Users/svenschnydrig/Documents/Coding Challenge/data/preprocessed/x_std.npy')
-y = np.load('/Users/svenschnydrig/Documents/Coding Challenge/data/preprocessed/y.npy')
+x = np.load(f"/home/{user}/eurosat/preprocessed/x_std.npy")
+y = np.load(f"/home/{user}/eurosat/preprocessed/y.npy")
 
 x_rgb = x[:,:,:, [3, 2, 1]].copy()
 
