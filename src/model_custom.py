@@ -38,10 +38,18 @@ for image, label in ds:
     images.append(image.numpy())
     labels.append(label.numpy())
 
-x_rgb = np.stack(images)
-print(x_rgb.shape)
+# x_rgb = np.stack(images)
+# print(x_rgb.shape)
+# print(x_rgb[0])
+#
+# y = tf.one_hot(labels, depth=ds_info.features['label'].num_classes).numpy()
+# print(y.shape)
+# print(y[0])
 
-y = tf.one_hot(labels, depth=ds_info.features['label'].num_classes).numpy()
+y = np.load(f"/data/eurosat/data/preprocessed/y.npy")
+print(y.shape)
+print(y[0])
+
 
 # Split the dataset into train and test sets
 x_train, x_test, y_train, y_test = train_test_split(x_rgb, y, test_size=0.2, random_state=42)
