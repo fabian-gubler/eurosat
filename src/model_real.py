@@ -1,47 +1,10 @@
-import numpy as np
-import tensorflow as tf
-
-from sklearn.model_selection import train_test_split
-from tensorflow.keras import regularizers
-from tensorflow.keras.applications import ResNet50
-from tensorflow.keras.layers import (Concatenate, Conv2D, Dense, Dropout,
-                                     Flatten, GlobalAveragePooling2D, Input,
-                                     MaxPooling2D)
 from tensorflow.keras.layers.experimental.preprocessing import Resizing
-from tensorflow.keras.models import Model
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tqdm.keras import TqdmCallback
-from tensorflow.keras.applications.resnet50 import preprocess_input
 
-import tensorflow_datasets as tfds
+# Assuming your data is stored in x and y
+x = np.load('/Users/svenschnydrig/Documents/Coding Challenge/data/preprocessed/x_std.npy')
+y = np.load('/Users/svenschnydrig/Documents/Coding Challenge/data/preprocessed/y.npy')
 
-
-print("loading data...")
-
-# user = "ubuntu"
-# y = np.load(f"/home/{user}/eurosat/preprocessed/y.npy")
-
-DATA_DIR = "../data"  # replace with your data directory
-ds, ds_info = tfds.load("eurosat/rgb", with_info=True, split="train", data_dir=DATA_DIR)
-
-def preprocess(features):
-    image = features["image"]
-    image = tf.image.convert_image_dtype(image, tf.float32)
-    image = tf.keras.applications.resnet50.preprocess_input(image)
-    return image, features["label"]
-
-ds = ds.map(preprocess)
-
-# Convert dataset to NumPy arrays
-images, labels = [], []
-for image, label in ds:
-    images.append(image.numpy())
-    labels.append(label.numpy())
-
-x_rgb = np.stack(images)
-print(x_rgb.shape)
-
-y = tf.one_hot(labels, depth=ds_info.features['label'].num_classes).numpy()
+x_rgb = x[:,:,:, [3, 2, 1]].copy()
 
 # Split the dataset into train and test sets
 x_train, x_test, y_train, y_test = train_test_split(x_rgb, y, test_size=0.2, random_state=42)
@@ -104,3 +67,6 @@ model.fit(datagen.flow(x_train, y_train, batch_size=batch_size),
           validation_data=(x_test, y_test),
           epochs=epochs,
           callbacks=[checkpoint_callback, early_stopping_callback])  
+
+# Save the model
+#model.save('resnet50.h5')
