@@ -86,10 +86,10 @@ base_model_additional = ResNet50(weights=None, include_top=False, input_tensor=i
 # )
 
 # Create a custom input layer for the additional bands
-input_layer_additional = Input(shape=(64, 64, x_additional.shape[3]))
-base_model_additional = ResNet50(
-    weights="imagenet", include_top=False, input_tensor=input_layer_additional
-)
+# input_layer_additional = Input(shape=(64, 64, x_additional.shape[3]))
+# base_model_additional = ResNet50(
+#     weights="imagenet", include_top=False, input_tensor=input_layer_additional
+# )
 
 print("extract & combine features...")
 
