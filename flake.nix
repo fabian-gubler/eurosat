@@ -18,10 +18,10 @@
         pythonPackages = pkgs.python310Packages;# <--- change here
         pkgs = import nixpkgs {
           inherit system;
-          config = {
-            allowUnfree = true;
-            cudaSupport = true;
-          };
+          # config = {
+          #   allowUnfree = true;
+          #   cudaSupport = true;
+          # };
         };
       in
       {
@@ -46,6 +46,7 @@
 			pythonPackages.etils
             # pythonPackages.pandas
             pythonPackages.matplotlib
+			pythonPackages.opencv4
             # pythonPackages.pycairo
             # pythonPackages.torch
             # pythonPackages.torchvision
@@ -53,7 +54,7 @@
             # pythonPackages.pandas
             # pythonPackages.pandas-datareader
             # pythonPackages.openpyxl
-            # pythonPackages.scikit-learn
+            pythonPackages.scikit-learn
             # pythonPackages.scipy
             # pythonPackages.scikitimage
             # pythonPackages.seaborn
