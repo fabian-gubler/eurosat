@@ -44,7 +44,7 @@
 			pythonPackages.tensorflow-datasets
 			pythonPackages.keras
 			pythonPackages.etils
-            # pythonPackages.pandas
+            pythonPackages.pandas
             pythonPackages.matplotlib
 			pythonPackages.opencv4
             # pythonPackages.pycairo
