@@ -25,14 +25,13 @@ model = tf.keras.models.load_model(name)
 # And we normalize it in the same way as you did for your training set
 # x_testset = ...
 
-
-
-user = "ubuntu"
-x_testset = np.load(f"/home/{user}/eurosat/preprocessed/x_testset_std.npy")
+eurosat_dir = "/data/eurosat"
+x_testset = np.load(f"{eurosat_dir}/data/preprocessed/x_rgb.npy")
 
 # Delete B1 (at index 0) and three other bands (let's assume at indices 8, 9, and 10)
-x_testset = np.delete(x_testset, 0, axis=3)
-x_testset = np.delete(x_testset, 8, axis=3)
+
+# x_testset = np.delete(x_testset, 0, axis=3)
+# x_testset = np.delete(x_testset, 8, axis=3)
 
 # Define the classes
 classes = [
