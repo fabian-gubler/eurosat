@@ -68,35 +68,6 @@ for i, layer in enumerate(base_model_additional.layers):
 for i, layer in enumerate(base_model_rgb.layers):
     layer._name = 'rgb_' + str(i) + '_' + layer.name
 
-# Continue the rest of your code as before...
-
-# x_rgb = x[:, :, :, [3, 2, 1]].copy()
-# x_additional = np.delete(
-#     x, [3, 2, 1], axis=3
-# )  # assuming the additional bands are at these indices
-#
-# # Split the dataset into train and test sets
-# x_train_rgb, x_test_rgb, y_train, y_test = train_test_split(
-#     x_rgb, y, test_size=0.2, random_state=42
-# )
-# x_train_additional, x_test_additional = train_test_split(
-#     x_additional, test_size=0.2, random_state=42
-# )
-#
-# print("create custom input layer")
-#
-# # Create a custom input layer for the RGB input
-# input_layer_rgb = Input(shape=(64, 64, 3))
-# resizing_layer_rgb = Resizing(224, 224, interpolation="Bilinear")(input_layer_rgb)
-# base_model_rgb = ResNet50(
-#     weights="imagenet", include_top=False, input_tensor=resizing_layer_rgb
-# )
-
-# Create a custom input layer for the additional bands
-# input_layer_additional = Input(shape=(64, 64, x_additional.shape[3]))
-# base_model_additional = ResNet50(
-#     weights="imagenet", include_top=False, input_tensor=input_layer_additional
-# )
 
 print("extract & combine features...")
 
@@ -165,15 +136,32 @@ early_stopping_callback = tf.keras.callbacks.EarlyStopping(
 
 print("train model...")
 
-# Fit the model with the augmented data
 batch_size = 50
 epochs = 20
+
+class CombinedDataGenerator:
+    def __init__(self, datagen, x_rgb, x_additional, y, batch_size):
+        self.rgb_gen = datagen.flow(x_rgb, y, batch_size=batch_size)
+        self.x_additional = x_additional
+        self.batch_size = batch_size
+
+    def __len__(self):
+        return len(self.rgb_gen)
+
+    def __getitem__(self, index):
+        rgb_batch, y_batch = self.rgb_gen[index]
+        additional_batch = self.x_additional[index*self.batch_size:(index+1)*self.batch_size]
+        return [rgb_batch, additional_batch], y_batch
+
+# Create an instance of the combined data generator
+train_gen = CombinedDataGenerator(datagen, x_train_rgb, x_train_additional, y_train, batch_size)
+
+# Now you can use the combined data generator with the fit function
 model.fit(
-    [datagen.flow(x_train_rgb, y_train, batch_size=batch_size), x_train_additional],
+    train_gen,
     steps_per_epoch=len(x_train_rgb) // batch_size,
     validation_data=([x_test_rgb, x_test_additional], y_test),
     epochs=epochs,
-    # callbacks=[checkpoint_callback, early_stopping_callback])
     callbacks=[TqdmCallback(verbose=1), checkpoint_callback, early_stopping_callback],
     verbose=0,
 )
