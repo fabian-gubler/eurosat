@@ -18,6 +18,9 @@ import tensorflow_datasets as tfds
 
 print("loading data...")
 
+user = "ubuntu"
+y = np.load(f"/home/{user}/eurosat/preprocessed/y.npy")
+
 DATA_DIR = "../data"  # replace with your data directory
 ds, ds_info = tfds.load("eurosat/rgb", with_info=True, split="train", data_dir=DATA_DIR)
 
@@ -37,7 +40,7 @@ for image, label in ds:
 
 x_rgb = np.stack(images)
 
-y = tf.one_hot(labels, depth=ds_info.features['label'].num_classes).numpy()
+# y = tf.one_hot(labels, depth=ds_info.features['label'].num_classes).numpy()
 
 # Split the dataset into train and test sets
 x_train, x_test, y_train, y_test = train_test_split(x_rgb, y, test_size=0.2, random_state=42)
