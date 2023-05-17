@@ -11,9 +11,6 @@
 #     name: python3
 # ---
 
-# from google.colab import drive
-# drive.mount('/content/drive')
-
 import numpy as np
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
@@ -26,9 +23,6 @@ from tensorflow.keras.layers.experimental.preprocessing import Resizing
 from tensorflow.keras.models import Model
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tqdm.keras import TqdmCallback
-
-# x = np.load('/content/drive/My Drive/data/x_std.npy')
-# y = np.load('/content/drive/My Drive/data/y.npy')
 
 user = "paperspace"
 
@@ -144,13 +138,17 @@ class CombinedDataGenerator:
         self.rgb_gen = datagen.flow(x_rgb, y, batch_size=batch_size)
         self.x_additional = x_additional
         self.batch_size = batch_size
+        self.index = 0
 
     def __len__(self):
         return len(self.rgb_gen)
 
-    def __getitem__(self, index):
-        rgb_batch, y_batch = self.rgb_gen[index]
-        additional_batch = self.x_additional[index*self.batch_size:(index+1)*self.batch_size]
+    def __next__(self):
+        if self.index >= len(self):
+            self.index = 0
+        rgb_batch, y_batch = self.rgb_gen[self.index]
+        additional_batch = self.x_additional[self.index*self.batch_size:(self.index+1)*self.batch_size]
+        self.index += 1
         return [rgb_batch, additional_batch], y_batch
 
 # Create an instance of the combined data generator
