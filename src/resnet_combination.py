@@ -32,7 +32,7 @@ from tqdm.keras import TqdmCallback
 
 user = "paperspace"
 
-print("loading data")
+print("loading data...")
 
 # Assuming your data is stored in x and y
 x = np.load(f"/home/{user}/eurosat/preprocessed/x_std.npy")
@@ -45,6 +45,8 @@ x_additional = np.delete(x, [3, 2, 1], axis=3)  # All other bands
 # Split the dataset into train and test sets
 x_train_rgb, x_test_rgb, y_train, y_test = train_test_split(x_rgb, y, test_size=0.2, random_state=42)
 x_train_additional, x_test_additional, _, _ = train_test_split(x_additional, y, test_size=0.2, random_state=42)  # We don't need to split y again
+
+print("create custom input layer...")
 
 # Create a custom input layer for the RGB and additional bands
 input_layer_rgb = Input(shape=(64, 64, 3))
@@ -89,7 +91,7 @@ base_model_additional = ResNet50(
     weights="imagenet", include_top=False, input_tensor=input_layer_additional
 )
 
-print("extract & combine features")
+print("extract & combine features...")
 
 # Extract features from the RGB and additional bands
 features_rgb = GlobalAveragePooling2D()(base_model_rgb.output)
@@ -115,7 +117,7 @@ for layer in base_model_rgb.layers[-9:]:
 for layer in base_model_additional.layers[-9:]:
     layer.trainable = True
 
-print("create model")
+print("create model...")
 
 # Create the final model
 model = Model(inputs=[input_layer_rgb, input_layer_additional], outputs=predictions)
@@ -154,7 +156,7 @@ early_stopping_callback = tf.keras.callbacks.EarlyStopping(
     monitor="val_accuracy", mode="max", patience=5, verbose=1, restore_best_weights=True
 )
 
-print("train model")
+print("train model...")
 
 # Fit the model with the augmented data
 batch_size = 50
