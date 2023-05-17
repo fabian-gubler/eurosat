@@ -32,35 +32,64 @@ from tqdm.keras import TqdmCallback
 
 user = "paperspace"
 
+print("loading data")
+
 # Assuming your data is stored in x and y
 x = np.load(f"/home/{user}/eurosat/preprocessed/x_std.npy")
 y = np.load(f"/home/{user}/eurosat/preprocessed/y.npy")
 
-x_rgb = x[:, :, :, [3, 2, 1]].copy()
-x_additional = np.delete(
-    x, [3, 2, 1], axis=3
-)  # assuming the additional bands are at these indices
+# Split the original dataset into RGB and additional bands
+x_rgb = x[:,:,:, [3, 2, 1]].copy()  # RGB bands
+x_additional = np.delete(x, [3, 2, 1], axis=3)  # All other bands
 
 # Split the dataset into train and test sets
-x_train_rgb, x_test_rgb, y_train, y_test = train_test_split(
-    x_rgb, y, test_size=0.2, random_state=42
-)
-x_train_additional, x_test_additional = train_test_split(
-    x_additional, test_size=0.2, random_state=42
-)
+x_train_rgb, x_test_rgb, y_train, y_test = train_test_split(x_rgb, y, test_size=0.2, random_state=42)
+x_train_additional, x_test_additional, _, _ = train_test_split(x_additional, y, test_size=0.2, random_state=42)  # We don't need to split y again
 
-# Create a custom input layer for the RGB input
+# Create a custom input layer for the RGB and additional bands
 input_layer_rgb = Input(shape=(64, 64, 3))
-resizing_layer_rgb = Resizing(224, 224, interpolation="Bilinear")(input_layer_rgb)
-base_model_rgb = ResNet50(
-    weights="imagenet", include_top=False, input_tensor=resizing_layer_rgb
-)
+input_layer_additional = Input(shape=(64, 64, x_additional.shape[3]))
+
+# Add a resizing layer to resize the RGB input to the size ResNet expects
+resizing_layer = Resizing(224, 224, interpolation="Bilinear")(input_layer_rgb)
+
+# Load the ResNet50 model without the top classification layer and with custom input
+base_model_rgb = ResNet50(weights='imagenet', include_top=False, input_tensor=resizing_layer)
+
+# For additional bands, create a separate ResNet50 model without pretrained weights
+base_model_additional = ResNet50(weights=None, include_top=False, input_tensor=input_layer_additional)
+
+# Continue the rest of your code as before...
+
+# x_rgb = x[:, :, :, [3, 2, 1]].copy()
+# x_additional = np.delete(
+#     x, [3, 2, 1], axis=3
+# )  # assuming the additional bands are at these indices
+#
+# # Split the dataset into train and test sets
+# x_train_rgb, x_test_rgb, y_train, y_test = train_test_split(
+#     x_rgb, y, test_size=0.2, random_state=42
+# )
+# x_train_additional, x_test_additional = train_test_split(
+#     x_additional, test_size=0.2, random_state=42
+# )
+#
+# print("create custom input layer")
+#
+# # Create a custom input layer for the RGB input
+# input_layer_rgb = Input(shape=(64, 64, 3))
+# resizing_layer_rgb = Resizing(224, 224, interpolation="Bilinear")(input_layer_rgb)
+# base_model_rgb = ResNet50(
+#     weights="imagenet", include_top=False, input_tensor=resizing_layer_rgb
+# )
 
 # Create a custom input layer for the additional bands
 input_layer_additional = Input(shape=(64, 64, x_additional.shape[3]))
 base_model_additional = ResNet50(
     weights="imagenet", include_top=False, input_tensor=input_layer_additional
 )
+
+print("extract & combine features")
 
 # Extract features from the RGB and additional bands
 features_rgb = GlobalAveragePooling2D()(base_model_rgb.output)
@@ -85,6 +114,8 @@ for layer in base_model_rgb.layers[-9:]:
     layer.trainable = True
 for layer in base_model_additional.layers[-9:]:
     layer.trainable = True
+
+print("create model")
 
 # Create the final model
 model = Model(inputs=[input_layer_rgb, input_layer_additional], outputs=predictions)
@@ -122,6 +153,8 @@ checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
 early_stopping_callback = tf.keras.callbacks.EarlyStopping(
     monitor="val_accuracy", mode="max", patience=5, verbose=1, restore_best_weights=True
 )
+
+print("train model")
 
 # Fit the model with the augmented data
 batch_size = 50
