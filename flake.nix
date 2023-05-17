@@ -41,8 +41,11 @@
             # add them to PYTHONPATH and thus make them accessible from within the venv.
             pythonPackages.numpy
 			pythonPackages.tensorflow
+			pythonPackages.tensorflow-datasets
+			pythonPackages.keras
+			pythonPackages.etils
             # pythonPackages.pandas
-            # pythonPackages.matplotlib
+            pythonPackages.matplotlib
             # pythonPackages.pycairo
             # pythonPackages.torch
             # pythonPackages.torchvision
