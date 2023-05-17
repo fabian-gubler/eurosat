@@ -18,7 +18,7 @@ import numpy as np
 import pandas as pd
 
 # Load the model
-name = "resnet50_std_wo_deeper_batch_128.h5"
+name = "resnet50_std_wo_deeper_rgb.h5"
 model = tf.keras.models.load_model(name)
 
 # Assume that x_testset is your test dataset
