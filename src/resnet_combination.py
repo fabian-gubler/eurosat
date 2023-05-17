@@ -61,6 +61,13 @@ base_model_rgb = ResNet50(weights='imagenet', include_top=False, input_tensor=re
 # For additional bands, create a separate ResNet50 model without pretrained weights
 base_model_additional = ResNet50(weights=None, include_top=False, input_tensor=input_layer_additional)
 
+# Ensure unique layer names
+for i, layer in enumerate(base_model_additional.layers):
+    layer._name = 'additional_' + str(i) + '_' + layer.name
+
+for i, layer in enumerate(base_model_rgb.layers):
+    layer._name = 'rgb_' + str(i) + '_' + layer.name
+
 # Continue the rest of your code as before...
 
 # x_rgb = x[:, :, :, [3, 2, 1]].copy()
