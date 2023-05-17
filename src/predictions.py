@@ -18,15 +18,15 @@ import numpy as np
 import pandas as pd
 
 # Load the model
-name = "resnet50_std_wo_deeper_rgb.h5"
+name = "resnet50_std_rgb_only.h5"
 model = tf.keras.models.load_model(name)
 
 # Assume that x_testset is your test dataset
 # And we normalize it in the same way as you did for your training set
 # x_testset = ...
 
-eurosat_dir = "/home/ubuntu"
-x_testset = np.load(f"{eurosat_dir}/preprocessed/x_testset.npy")
+eurosat_dir = "/home/ubuntu/eurosat"
+x = np.load(f"{eurosat_dir}/preprocessed/x_testset_std.npy")
 
 # x_testset = np.load("/data/eurosat/data/preprocessed/x_rgb.npy")
 
@@ -35,7 +35,7 @@ x_testset = np.load(f"{eurosat_dir}/preprocessed/x_testset.npy")
 
 # x_testset = np.delete(x_testset, 0, axis=3)
 # x_testset = np.delete(x_testset, 8, axis=3)
-x_textset = x_testset[:,:,:, [3, 2, 1]].copy()
+x_testset = x[:,:,:, [3, 2, 1]].copy()
 
 
 # Define the classes
@@ -53,19 +53,19 @@ classes = [
 ]
 
 # Make predictions
-# predictions = model.predict(x_testset)
-#
-# # Get the class with highest probability for each test image
-# predicted_classes = np.argmax(predictions, axis=1)
-#
-# # Map the class indices to actual class names
-# predicted_class_names = [classes[i] for i in predicted_classes]
-#
-# # Create a DataFrame for the test IDs and their predicted labels
-# df = pd.DataFrame(data={
-#     'test_id': np.arange(len(predicted_class_names)),
-#     'label': predicted_class_names
-# })
-#
-# # Save the DataFrame to a CSV file
-# df.to_csv(name+'.csv', index=False)
+predictions = model.predict(x_testset)
+
+# Get the class with highest probability for each test image
+predicted_classes = np.argmax(predictions, axis=1)
+
+# Map the class indices to actual class names
+predicted_class_names = [classes[i] for i in predicted_classes]
+
+# Create a DataFrame for the test IDs and their predicted labels
+df = pd.DataFrame(data={
+    'test_id': np.arange(len(predicted_class_names)),
+    'label': predicted_class_names
+})
+
+# Save the DataFrame to a CSV file
+df.to_csv(name+'.csv', index=False)
