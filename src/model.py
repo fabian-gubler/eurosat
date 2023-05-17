@@ -77,7 +77,7 @@ datagen = ImageDataGenerator(
 )
 
 # Define the checkpoint callback
-checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(filepath='resnet50_std_wo_deeper_rgb.h5', monitor='val_accuracy', mode='max', save_best_only=True, save_weights_only=False, verbose=1)
+checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(filepath='resnet50_std_rgb_only.h5', monitor='val_accuracy', mode='max', save_best_only=True, save_weights_only=False, verbose=1)
 # Define the early stopping callback
 early_stopping_callback = tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', mode='max', patience=5, verbose=1, restore_best_weights=True)
 
