@@ -11,11 +11,9 @@
 #     name: python3
 # ---
 
-# + colab={"base_uri": "https://localhost:8080/"} id="Evh4OQXjEbIh" outputId="76c6c304-4283-413a-da1e-7564adb35451"
 # from google.colab import drive
 # drive.mount('/content/drive')
 
-# + id="BIMKJrl_F_Jo"
 import numpy as np
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
@@ -24,14 +22,10 @@ from tensorflow.keras.applications import ResNet50
 from tensorflow.keras.layers import (Concatenate, Conv2D, Dense, Dropout,
                                      Flatten, GlobalAveragePooling2D, Input,
                                      MaxPooling2D)
+from tensorflow.keras.layers.experimental.preprocessing import Resizing
 from tensorflow.keras.models import Model
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tqdm.keras import TqdmCallback
-from tensorflow.keras.layers.experimental.preprocessing import Resizing
-
-
-# + colab={"base_uri": "https://localhost:8080/", "height": 240} id="zpRewC6WLgwR" outputId="6fcc7005-24a2-4d1b-b6f0-afce208014b5"
-# Load and preprocess the data
 
 # x = np.load('/content/drive/My Drive/data/x_std.npy')
 # y = np.load('/content/drive/My Drive/data/y.npy')
@@ -42,21 +36,31 @@ user = "paperspace"
 x = np.load(f"/home/{user}/eurosat/preprocessed/x_std.npy")
 y = np.load(f"/home/{user}/eurosat/preprocessed/y.npy")
 
-x_rgb = x[:,:,:, [3, 2, 1]].copy()
-x_additional = np.delete(x, [3, 2, 1], axis=3)  # assuming the additional bands are at these indices
+x_rgb = x[:, :, :, [3, 2, 1]].copy()
+x_additional = np.delete(
+    x, [3, 2, 1], axis=3
+)  # assuming the additional bands are at these indices
 
 # Split the dataset into train and test sets
-x_train_rgb, x_test_rgb, y_train, y_test = train_test_split(x_rgb, y, test_size=0.2, random_state=42)
-x_train_additional, x_test_additional = train_test_split(x_additional, test_size=0.2, random_state=42)
+x_train_rgb, x_test_rgb, y_train, y_test = train_test_split(
+    x_rgb, y, test_size=0.2, random_state=42
+)
+x_train_additional, x_test_additional = train_test_split(
+    x_additional, test_size=0.2, random_state=42
+)
 
 # Create a custom input layer for the RGB input
 input_layer_rgb = Input(shape=(64, 64, 3))
 resizing_layer_rgb = Resizing(224, 224, interpolation="Bilinear")(input_layer_rgb)
-base_model_rgb = ResNet50(weights='imagenet', include_top=False, input_tensor=resizing_layer_rgb)
+base_model_rgb = ResNet50(
+    weights="imagenet", include_top=False, input_tensor=resizing_layer_rgb
+)
 
 # Create a custom input layer for the additional bands
 input_layer_additional = Input(shape=(64, 64, x_additional.shape[3]))
-base_model_additional = ResNet50(weights='imagenet', include_top=False, input_tensor=input_layer_additional)
+base_model_additional = ResNet50(
+    weights="imagenet", include_top=False, input_tensor=input_layer_additional
+)
 
 # Extract features from the RGB and additional bands
 features_rgb = GlobalAveragePooling2D()(base_model_rgb.output)
@@ -64,13 +68,12 @@ features_additional = GlobalAveragePooling2D()(base_model_additional.output)
 
 # Combine the features and add a classification layer
 combined_features = tf.keras.layers.concatenate([features_rgb, features_additional])
-x = Dense(1024, activation='relu')(combined_features)
+x = Dense(1024, activation="relu")(combined_features)
 x = Dropout(0.2)(x)
-x = Dense(1024, activation='relu')(x)
+x = Dense(1024, activation="relu")(x)
 x = Dropout(0.2)(x)
-predictions = Dense(y.shape[1], activation='softmax')(x)
+predictions = Dense(y.shape[1], activation="softmax")(x)
 
-# + id="yoA2nMpWLmpi"
 # Freeze all layers in the base models
 for layer in base_model_rgb.layers:
     layer.trainable = False
@@ -87,7 +90,11 @@ for layer in base_model_additional.layers[-9:]:
 model = Model(inputs=[input_layer_rgb, input_layer_additional], outputs=predictions)
 
 # Compile the model
-model.compile(optimizer=tf.keras.optimizers.legacy.Adam(learning_rate=0.003), loss='categorical_crossentropy', metrics=['accuracy'])
+model.compile(
+    optimizer=tf.keras.optimizers.legacy.Adam(learning_rate=0.003),
+    loss="categorical_crossentropy",
+    metrics=["accuracy"],
+)
 
 datagen = ImageDataGenerator(
     rotation_range=20,
@@ -119,10 +126,12 @@ early_stopping_callback = tf.keras.callbacks.EarlyStopping(
 # Fit the model with the augmented data
 batch_size = 50
 epochs = 20
-model.fit([datagen.flow(x_train_rgb, y_train, batch_size=batch_size), x_train_additional],
-          steps_per_epoch=len(x_train_rgb) // batch_size,
-          validation_data=([x_test_rgb, x_test_additional], y_test),
-          epochs=epochs,
-          # callbacks=[checkpoint_callback, early_stopping_callback])  
-          callbacks=[TqdmCallback(verbose=1), checkpoint_callback, early_stopping_callback])
-
+model.fit(
+    [datagen.flow(x_train_rgb, y_train, batch_size=batch_size), x_train_additional],
+    steps_per_epoch=len(x_train_rgb) // batch_size,
+    validation_data=([x_test_rgb, x_test_additional], y_test),
+    epochs=epochs,
+    # callbacks=[checkpoint_callback, early_stopping_callback])
+    callbacks=[TqdmCallback(verbose=1), checkpoint_callback, early_stopping_callback],
+    verbose=0,
+)
