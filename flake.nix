@@ -18,10 +18,10 @@
         pythonPackages = pkgs.python310Packages;# <--- change here
         pkgs = import nixpkgs {
           inherit system;
-          # config = {
-          #   allowUnfree = true;
-          #   cudaSupport = true;
-          # };
+          config = {
+            allowUnfree = true;
+            cudaSupport = true;
+          };
         };
       in
       {
