@@ -31,6 +31,8 @@ import pandas as pd
 x_testset = np.load("/data/eurosat/data/preprocessed/x_rgb.npy")
 
 print(x_testset.shape)
+eurosat_dir = "/home/ubuntu/eurosat"
+x_testset = np.load(f"{eurosat_dir}/preprocessed/x_rgb.npy")
 
 # Delete B1 (at index 0) and three other bands (let's assume at indices 8, 9, and 10)
 
