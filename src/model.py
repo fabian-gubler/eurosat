@@ -8,7 +8,7 @@ from tensorflow.keras.layers import (Concatenate, Conv2D, Dense, Dropout,
 from tensorflow.keras.layers.experimental.preprocessing import Resizing
 from tensorflow.keras.models import Model
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow_datasets import tfds
+import tensorflow_datasets as tfds
 
 # Load EuroSAT data
 DATA_DIR = "../data"  # replace with your data directory

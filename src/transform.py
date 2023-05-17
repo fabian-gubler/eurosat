@@ -18,6 +18,7 @@ def get_rgb_values(filename):
 
     # Reorder the channels to match the RGB order (assuming 0-based indexing)
     rgb_image = multispectral_image[:, :, [3, 2, 1]]
+    print(rgb_image)
 
     # Normalize the pixel values to the range [0, 255] for each channel separately
     normalized_image = (
@@ -30,21 +31,16 @@ def get_rgb_values(filename):
 
 
 # Loop over all files in the source folder
-# for filename in os.listdir(src_folder):
-#
-#     # Check if the file is a .npy file
-#     if filename.endswith(".npy"):
-#
-#         # Get the RGB values for the image
-#         rgb_image = get_rgb_values(filename)
-#
-#         # Save the image to the destination folder
-#         Image.fromarray(rgb_image).save(os.path.join(dst_folder, filename[:-4] + ".png"))
+for filename in os.listdir(src_folder):
+
+    # Check if the file is a .npy file
+    if filename.endswith(".npy"):
+
+        # Get the RGB values for the image
+        rgb_image = get_rgb_values(filename)
+        break
+
+        # Save the image to the destination folder
+        # Image.fromarray(rgb_image).save(os.path.join(dst_folder, filename[:-4] + ".png"))
 
 
-# Assuming your data is stored in x and y
-x = np.load(f"/data/eurosat/data/preprocessed/x_std.npy")
-y = np.load(f"/data/eurosat/data/preprocessed/y.npy")
-
-x_rgb = x[:, :, :, [3, 2, 1]].copy()
-print(x_rgb.shape)
