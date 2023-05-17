@@ -133,33 +133,40 @@ print("train model...")
 batch_size = 50
 epochs = 20
 
-class CombinedDataGenerator:
-    def __init__(self, datagen, x_rgb, x_additional, y, batch_size):
-        self.rgb_gen = datagen.flow(x_rgb, y, batch_size=batch_size)
-        self.x_additional = x_additional
-        self.batch_size = batch_size
-        self.index = 0
-
-    def __len__(self):
-        return len(self.rgb_gen)
-
-    def __next__(self):
-        if self.index >= len(self):
-            self.index = 0
-        rgb_batch, y_batch = self.rgb_gen[self.index]
-        additional_batch = self.x_additional[self.index*self.batch_size:(self.index+1)*self.batch_size]
-        self.index += 1
-        return [rgb_batch, additional_batch], y_batch
-
-# Create an instance of the combined data generator
-train_gen = CombinedDataGenerator(datagen, x_train_rgb, x_train_additional, y_train, batch_size)
-
 # Now you can use the combined data generator with the fit function
-model.fit(
-    train_gen,
-    steps_per_epoch=len(x_train_rgb) // batch_size,
-    validation_data=([x_test_rgb, x_test_additional], y_test),
-    epochs=epochs,
-    callbacks=[TqdmCallback(verbose=1), checkpoint_callback, early_stopping_callback],
-    verbose=0,
+# model.fit([datagen.flow(x_train_rgb, y_train, batch_size=batch_size), x_train_additional],
+#     steps_per_epoch=len(x_train_rgb) // batch_size,
+#     validation_data=([x_test_rgb, x_test_additional], y_test),
+#     epochs=epochs,
+#     callbacks=[TqdmCallback(verbose=1), checkpoint_callback, early_stopping_callback],
+#     verbose=0,
+# )
+#
+# Create data generators for both RGB and additional bands
+datagen_rgb = ImageDataGenerator(
+    rotation_range=20,
+    shear_range=0.2,
 )
+datagen_additional = ImageDataGenerator(
+    rotation_range=20,
+    shear_range=0.2,
+)
+
+# Create data generators
+train_datagen_rgb = datagen_rgb.flow(x_train_rgb, y_train, batch_size=batch_size)
+train_datagen_additional = datagen_additional.flow(x_train_additional, y_train, batch_size=batch_size)
+
+# Merge the two generators into one using zip
+train_datagen = zip(train_datagen_rgb, train_datagen_additional)
+
+# Similarly, for validation data, no augmentation is needed
+# But you should zip the validation datasets
+valid_data = ([x_test_rgb, x_test_additional], y_test)
+
+# Now use this in model.fit()
+model.fit(train_datagen,
+          steps_per_epoch=len(x_train_rgb) // batch_size,
+          validation_data=valid_data,
+          epochs=epochs,
+          callbacks=[checkpoint_callback, early_stopping_callback])
+
