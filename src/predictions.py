@@ -53,19 +53,19 @@ classes = [
 ]
 
 # Make predictions
-# predictions = model.predict(x_testset)
-#
-# # Get the class with highest probability for each test image
-# predicted_classes = np.argmax(predictions, axis=1)
-#
-# # Map the class indices to actual class names
-# predicted_class_names = [classes[i] for i in predicted_classes]
-#
-# # Create a DataFrame for the test IDs and their predicted labels
-# df = pd.DataFrame(data={
-#     'test_id': np.arange(len(predicted_class_names)),
-#     'label': predicted_class_names
-# })
-#
-# # Save the DataFrame to a CSV file
-# df.to_csv(name+'.csv', index=False)
+predictions = model.predict(x_testset)
+
+# Get the class with highest probability for each test image
+predicted_classes = np.argmax(predictions, axis=1)
+
+# Map the class indices to actual class names
+predicted_class_names = [classes[i] for i in predicted_classes]
+
+# Create a DataFrame for the test IDs and their predicted labels
+df = pd.DataFrame(data={
+    'test_id': np.arange(len(predicted_class_names)),
+    'label': predicted_class_names
+})
+
+# Save the DataFrame to a CSV file
+df.to_csv(name+'.csv', index=False)
