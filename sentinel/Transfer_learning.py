@@ -176,7 +176,7 @@ model.compile(optimizer='adadelta', loss='categorical_crossentropy',
 # ### 6. fit model (train new top layers)
 
 history = model.fit(train_generator,
-                    steps_per_epoch=100,
+                    steps_per_epoch=20,
                     epochs=5,
                     callbacks=[checkpointer, earlystopper,
                                tensorboard],
@@ -238,7 +238,7 @@ earlystopper = EarlyStopping(monitor='val_categorical_accuracy',
                              patience=50,
                              mode='max')
 model.fit(train_generator,
-          steps_per_epoch=100,
+          steps_per_epoch=20,
           epochs=initial_epoch+5,
           callbacks=[checkpointer, earlystopper, tensorboard],
           validation_data=validation_generator,
