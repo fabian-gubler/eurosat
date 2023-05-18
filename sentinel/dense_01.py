@@ -10,9 +10,6 @@ License: MIT
 
 """
 
-# TODO:
-# - check what bands should be used
-
 import os
 from glob import glob
 
@@ -59,19 +56,13 @@ print(f"x initial: {x.shape}")
 # B1, B2, B3, B4 ,B5, B6, B7, B8, B8A, B9, B11, B12
 # 00, 01, 02, 03, 04, 05, 06, 07, 08, 09, 010, 011
 
-# TODO - Best: NDBI, NDMI
 
 # NDVI, NDWI, NDBI, NDSI, SAVI, MNDWI
+# NDVI, NDWI, NDBI, NDSI, SAVI, MNDWI, NBR, NDMI
 # 012,  013,  014,  015,  016,  017
 
-x = np.delete(x, 17, axis=3)
-x = np.delete(x, 16, axis=3)
-x = np.delete(x, 15, axis=3)
-# x = np.delete(x, 14, axis=3)
-x = np.delete(x, 13, axis=3)
-x = np.delete(x, 12, axis=3)
-x = np.delete(x, 9, axis=3)
-x = np.delete(x, 0, axis=3)
+bands_to_remove = [0, 9, 12, 13, 15, 16, 17]
+x = np.delete(x, bands_to_remove, axis=3)
 
 print(f"x after: {x.shape}")
 
@@ -174,7 +165,7 @@ earlystopper = EarlyStopping(
     restore_best_weights=True,
 )
 
-print("training first layers...")
+print("training 1st step...")
 history = model.fit(
     datagen.flow(x_train, y_train, batch_size=batch_size),
     steps_per_epoch=len(x_train) // batch_size,
@@ -188,6 +179,8 @@ initial_epoch = len(history.history["loss"]) + 1
 # at this point, the top layers are well trained and we can start fine-tuning
 # convolutional layers. We will freeze the bottom N layers
 # and train the remaining top layers.
+
+print("training 2nd step...")
 
 # let's visualize layer names and layer indices to see how many layers
 # we should freeze:
