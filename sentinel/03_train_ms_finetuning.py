@@ -33,12 +33,15 @@ print("loading data...")
 x = np.load(f"{prefix}/preprocessed/x_std.npy")
 y = np.load(f"{prefix}/preprocessed/y.npy")
 
+print(f'x initial: {x.shape}')
+
 # Delete B1 & B10 and all supplementary Indeces
 x = np.delete(x, 0, axis=3)
 x = np.delete(x, 9, axis=3)
 x = np.delete(x, 12, axis=3)
 
-print(x.shape)
+print(f'x after: {x.shape}')
+
 # x = np.delete(x, 13, axis=3)
 # x = np.delete(x, 14, axis=3)
 # x = np.delete(x, 15, axis=3)
