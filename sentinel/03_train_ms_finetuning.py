@@ -9,6 +9,10 @@ sensing research with open data and Python.
 License: MIT
 
 """
+
+# TODO:
+# - check what bands should be used
+
 import os
 from glob import glob
 
@@ -22,48 +26,9 @@ from tensorflow.keras.layers import (Conv2D, Dense, GlobalAveragePooling2D,
                                      Input)
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import SGD
-
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
-prefix = "/home/ubuntu/eurosat"
-
-print("loading data...")
-
-# Assuming your data is stored in x and y
-x = np.load(f"{prefix}/preprocessed/x_std.npy")
-y = np.load(f"{prefix}/preprocessed/y.npy")
-
-print(f'x initial: {x.shape}')
-
-# Delete B1 & B10 and all supplementary Indeces
-# x = np.delete(x, 0, axis=3)
-# x = np.delete(x, 9, axis=3)
-# x = np.delete(x, 12, axis=3)
-#
-#
-# x = np.delete(x, 13, axis=3)
-# x = np.delete(x, 14, axis=3)
-
-# x = np.delete(x, 18, axis=3)
-x = np.delete(x, 17, axis=3)
-# x = np.delete(x, 16, axis=3)
-x = np.delete(x, 15, axis=3)
-x = np.delete(x, 14, axis=3)
-x = np.delete(x, 13, axis=3)
-x = np.delete(x, 12, axis=3)
-x = np.delete(x, 9, axis=3)
-x = np.delete(x, 0, axis=3)
-
-print(f'x after: {x.shape}')
-
-# assert x.shape[3] == 12
-
-x_train, x_test, y_train, y_test = train_test_split(
-    x, y, test_size=0.2, random_state=42
-)
-
 # variables
-# path_to_split_datasets = "../data/AllBands"
 use_vgg = False
 batch_size = 64
 
@@ -81,11 +46,38 @@ class_indices = {
 }
 num_classes = len(class_indices)
 
-# contruct path
-# path_to_home = os.path.expanduser("~")
-# path_to_split_datasets = path_to_split_datasets.replace("~", path_to_home)
-# path_to_train = os.path.join(path_to_split_datasets, "train")
-# path_to_validation = os.path.join(path_to_split_datasets, "validation")
+prefix = "/home/ubuntu/eurosat"
+
+print("loading data...")
+
+# Assuming your data is stored in x and y
+x = np.load(f"{prefix}/preprocessed/x_std.npy")
+y = np.load(f"{prefix}/preprocessed/y.npy")
+
+print(f"x initial: {x.shape}")
+
+# B1, B2, B3, B4 ,B5, B6, B7, B8, B8A, B9, B11, B12
+# 00, 01, 02, 03, 04, 05, 06, 07, 08, 09, 010, 011
+
+# Best: NDBI, NDMI
+
+# NDVI, NDWI, NDBI, NDSI, SAVI, MNDWI
+# 012,  013,  014,  015,  016,  017
+
+x = np.delete(x, 17, axis=3)
+x = np.delete(x, 16, axis=3)
+x = np.delete(x, 15, axis=3)
+# x = np.delete(x, 14, axis=3)
+x = np.delete(x, 13, axis=3)
+x = np.delete(x, 12, axis=3)
+x = np.delete(x, 9, axis=3)
+x = np.delete(x, 0, axis=3)
+
+print(f"x after: {x.shape}")
+
+x_train, x_test, y_train, y_test = train_test_split(
+    x, y, test_size=0.2, random_state=45
+)
 
 print("configuring model...")
 
@@ -132,26 +124,6 @@ predictions = Dense(num_classes, activation="softmax")(top_model)
 # this is the model we will train
 model = Model(inputs=base_model.input, outputs=predictions)
 
-# print network structure
-model.summary()
-
-# defining ImageDataGenerators
-# ... initialization for training
-# training_files = glob(path_to_train + "/**/*.tif")
-# train_generator = simple_image_generator(
-#     training_files,
-#     class_indices,
-#     batch_size=batch_size,
-#     rotation_range=45,
-#     horizontal_flip=True,
-#     vertical_flip=True,
-# )
-
-# ... initialization for validation
-# validation_files = glob(path_to_validation + "/**/*.tif")
-# validation_generator = simple_image_generator(
-#     validation_files, class_indices, batch_size=batch_size
-# )
 
 # first: train only the top layers (which were randomly initialized)
 # i.e. freeze all convolutional layers
@@ -169,12 +141,11 @@ model.compile(
 )
 
 
-
 datagen = ImageDataGenerator(
     rotation_range=45,
-    # shear_range=0.2,  # added shear transformation
     horizontal_flip=True,
     vertical_flip=True,
+    # shear_range=0.2,  # added shear transformation
     # width_shift_range=0.2,
     # height_shift_range=0.2,
     # zoom_range=0.2,  # added zoom
@@ -275,6 +246,6 @@ model.fit(
     epochs=50,
     callbacks=[checkpointer, earlystopper],
     validation_data=(x_test, y_test),
-    validation_steps=50,
+    validation_steps=100,
     initial_epoch=initial_epoch,
 )
