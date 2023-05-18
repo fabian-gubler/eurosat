@@ -20,7 +20,7 @@ def compare_csv_files(file1, file2):
 
 # Usage example
 csv_file1 = 'resnet50_std_wo_deeper_rgb.h5.csv'
-csv_file2 = 'efficientnet.csv'
+csv_file2 = 'dense_ms_transfer_init.03-0.912.hdf5.csv'
 
 percentage_diff = compare_csv_files(csv_file1, csv_file2)
 print(f"Percentage of differing entries: {percentage_diff:.2f}%")

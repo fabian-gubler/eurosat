@@ -8,18 +8,19 @@ from tensorflow.keras.models import load_model
 from tqdm import tqdm
 
 # Load your trained model
-name = "efficientnet"
-model = load_model(name)
+# name = "efficientnet"
+# model = load_model(name)
 
 # Directory containing .npy test files
 # test_dir = "/home/ubuntu/eurosat/data/testset"
-test_dir = "/home/ubuntu/eurosat/data/testset"
+prefix = "/data/eurosat"
+test_dir = f'{prefix}/data/testset'
 
 # Get a list of all .npy files in the directory
 test_files = [f for f in os.listdir(test_dir) if f.endswith(".npy")]
 
 # Preallocate a numpy array for your predictions
-predictions = np.zeros(len(test_files), dtype=int)
+# predictions = np.zeros(len(test_files), dtype=int)
 
 # Define the classes
 classes = [
@@ -64,19 +65,20 @@ for i, file in tqdm(enumerate(test_files), total=len(test_files), desc="Predicti
     image = np.expand_dims(image, axis=0)
 
     # Make prediction
-    prediction = model.predict(image, verbose=0)
+    # prediction = model.predict(image, verbose=0)
 
     # Convert prediction probabilities to class label
-    predicted_class = np.argmax(prediction, axis=1)
+    # predicted_class = np.argmax(prediction, axis=1)
 
     # Store the prediction
-    predictions[i] = predicted_class
+    # predictions[i] = predicted_class
 
     # Visualize the RGB image
-    predicted_class_name = [classes[i] for i in predicted_class]
+    # predicted_class_name = [classes[i] for i in predicted_class]
     plt.imshow(image[0])
-    plt.title(f'Predicted class: {predicted_class_name}')
+    plt.title(f'Index: {counter}')
     plt.show()
+    counter += 1
 
 
 # Map the class indices to actual class names

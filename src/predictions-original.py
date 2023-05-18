@@ -13,28 +13,19 @@
 # ---
 
 # +
+import tensorflow as tf
+import numpy as np
 import pandas as pd
 
 # Load the model
-name = "resnet50_std_rgb_only.h5"
+name = "EfficientNetB7_64x64x20_rot_20_shear_2.h5"
 model = tf.keras.models.load_model(name)
 
 # Assume that x_testset is your test dataset
 # And we normalize it in the same way as you did for your training set
 # x_testset = ...
 
-eurosat_dir = "/home/ubuntu/eurosat"
-x = np.load(f"{eurosat_dir}/preprocessed/x_testset_std.npy")
-
-# x_testset = np.load("/data/eurosat/data/preprocessed/x_rgb.npy")
-
-
-# Delete B1 (at index 0) and three other bands (let's assume at indices 8, 9, and 10)
-
-# x_testset = np.delete(x_testset, 0, axis=3)
-# x_testset = np.delete(x_testset, 8, axis=3)
-x_testset = x[:,:,:, [3, 2, 1]].copy()
-
+x_testset = np.load('/Users/svenschnydrig/Documents/Coding Challenge/data/x_testset.npy')
 
 # Define the classes
 classes = [

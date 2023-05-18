@@ -18,15 +18,23 @@ y = np.load(f"/home/{user}/eurosat/preprocessed/y.npy")
 # Check the shape of the input data
 print(f"Original shape of x: {x.shape}")
 
-# Delete B1 (at index 0) and three other bands (let's assume at indices 8, 9, and 10)
+# Delete B1 & B10 and all supplementary Indeces
 x = np.delete(x, 0, axis=3)
-x = np.delete(x, 8, axis=3)
+x = np.delete(x, 9, axis=3)
+x = np.delete(x, 12, axis=3)
+x = np.delete(x, 13, axis=3)
+x = np.delete(x, 14, axis=3)
+x = np.delete(x, 15, axis=3)
+x = np.delete(x, 16, axis=3)
+x = np.delete(x, 17, axis=3)
+x = np.delete(x, 18, axis=3)
+x = np.delete(x, 19, axis=3)
 
 # Check the shape of the input data after deleting the bands
 print(f"Shape of x after deleting the bands: {x.shape}")
 
 # Ensure that the depth of the input data is 16 after deleting the bands
-assert x.shape[3] == 18, "The depth of the input data must be 18"
+assert x.shape[3] == 12, "The depth of the input data must be 18"
 
 # Split the dataset into train and test sets
 
