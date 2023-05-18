@@ -36,18 +36,23 @@ y = np.load(f"{prefix}/preprocessed/y.npy")
 print(f'x initial: {x.shape}')
 
 # Delete B1 & B10 and all supplementary Indeces
-x = np.delete(x, 0, axis=3)
-x = np.delete(x, 9, axis=3)
-x = np.delete(x, 12, axis=3)
+# x = np.delete(x, 0, axis=3)
+# x = np.delete(x, 9, axis=3)
+# x = np.delete(x, 12, axis=3)
+#
+#
+# x = np.delete(x, 13, axis=3)
+# x = np.delete(x, 14, axis=3)
 
-
-x = np.delete(x, 13, axis=3)
+x = np.delete(x, 18, axis=3)
+x = np.delete(x, 17, axis=3)
+x = np.delete(x, 16, axis=3)
+x = np.delete(x, 15, axis=3)
 x = np.delete(x, 14, axis=3)
-# x = np.delete(x, 15, axis=3)
-# x = np.delete(x, 16, axis=3)
-# x = np.delete(x, 17, axis=3)
-# x = np.delete(x, 18, axis=3)
-# x = np.delete(x, 19, axis=3)
+x = np.delete(x, 13, axis=3)
+x = np.delete(x, 12, axis=3)
+x = np.delete(x, 9, axis=3)
+x = np.delete(x, 0, axis=3)
 
 print(f'x after: {x.shape}')
 
@@ -85,7 +90,7 @@ num_classes = len(class_indices)
 print("configuring model...")
 
 # parameters for CNN
-input_tensor = Input(shape=(64, 64, x.shape[3]))
+input_layer = Input(shape=(64, 64, 11))
 # introduce a additional layer to get from 13 to 3 input channels
 input_tensor = Conv2D(3, (1, 1))(input_tensor)
 if use_vgg:
