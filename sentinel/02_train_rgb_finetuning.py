@@ -114,14 +114,14 @@ else:
 
 checkpointer = ModelCheckpoint("../data/models/" + file_name +
                                "_rgb_transfer_init." +
-                               "{epoch:02d}-{val_categorical_accuracy:.3f}." +
+                               "{epoch:02d}-{val_accuracy:.3f}." +
                                "hdf5",
-                               monitor='val_categorical_accuracy',
+                               monitor='val_accuracy',
                                verbose=1,
                                save_best_only=True,
                                mode='max')
 
-earlystopper = EarlyStopping(monitor='val_categorical_accuracy',
+earlystopper = EarlyStopping(monitor='val_accuracy',
                              patience=10,
                              mode='max',
                              restore_best_weights=True)
@@ -175,13 +175,13 @@ else:
     file_name = "dense"
 checkpointer = ModelCheckpoint("../data/models/" + file_name +
                                "_rgb_transfer_final." +
-                               "{epoch:02d}-{val_categorical_accuracy:.3f}" +
+                               "{epoch:02d}-{val_accuracy:.3f}" +
                                ".hdf5",
-                               monitor='val_categorical_accuracy',
+                               monitor='val_accuracy',
                                verbose=1,
                                save_best_only=True,
                                mode='max')
-earlystopper = EarlyStopping(monitor='val_categorical_accuracy',
+earlystopper = EarlyStopping(monitor='val_accuracy',
                              patience=50,
                              mode='max')
 model.fit(
