@@ -43,9 +43,9 @@ x = np.delete(x, 12, axis=3)
 
 x = np.delete(x, 13, axis=3)
 x = np.delete(x, 14, axis=3)
-# x = np.delete(x, 15, axis=3)
-# x = np.delete(x, 16, axis=3)
-# x = np.delete(x, 17, axis=3)
+x = np.delete(x, 15, axis=3)
+x = np.delete(x, 16, axis=3)
+x = np.delete(x, 17, axis=3)
 # x = np.delete(x, 18, axis=3)
 # x = np.delete(x, 19, axis=3)
 
