@@ -47,6 +47,7 @@
             pythonPackages.pandas
             pythonPackages.matplotlib
 			pythonPackages.opencv4
+			pythonPackages.gdal
             # pythonPackages.pycairo
             # pythonPackages.torch
             # pythonPackages.torchvision
@@ -86,6 +87,7 @@
 
             # Needed for Cuda Toolkit to work
 			pkgs.csvdiff
+			pkgs.gdal
             # pkgs.cudatoolkit 
             # pkgs.linuxPackages.nvidia_x11
             # pkgs.cudaPackages.cudnn

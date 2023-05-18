@@ -8,8 +8,12 @@ import pandas as pd
 
 
 # input files
-path_to_images = "../data/testset/"    # Folder with test images
-path_to_model = "../data/models/vgg_rgb_transfer_final.56.hdf5"
+path_to_images = "../data/testset_tiff"    # Folder with test images
+path_to_model = "../data/models/vgg/vgg_ms_transfer_alternative_final.27-0.985.hdf5"
+
+# create directory for output
+if not os.path.exists("../data/output"):
+    os.makedirs("../data/output")
 
 # output files
 path_to_output_csv = "../data/output/predictions.csv"

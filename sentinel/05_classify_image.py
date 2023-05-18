@@ -19,8 +19,9 @@ import os
 
 
 # input files
-path_to_image = "../data/testset/test_0.npy"
-path_to_model = "../data/models/vgg_rgb_transfer_final.56.hdf5"
+# path_to_image = "../data/testset_tiff/test_0.tif"
+path_to_image = "../data/AllBands/train/Forest/Forest_1.tif"
+path_to_model = "../data/models/vgg/vgg_ms_transfer_alternative_final.27-0.985.hdf5"
 
 # output files
 label_dir = "../data/labels/"
@@ -74,40 +75,40 @@ for row in tqdm(range(input_rows, num_rows-input_rows), desc="Processing..."):
     image_classified_prob[row, input_cols:num_cols-input_cols, : ] = row_classified
 
 # crop padded final image
-image_classified_prob = image_classified_prob[input_rows:num_rows-input_rows,
-                                              input_cols:num_cols-input_cols, :]
-image_classified_label = np.argmax(image_classified_prob, axis=-1)
-image_classified_prob = np.sort(image_classified_prob, axis=-1)[..., -1]
-
-write image as Geotiff for correct georeferencing
-read geotransformation
-image = gdal.Open(path_to_image, gdal.GA_ReadOnly)
-geotransform = image.GetGeoTransform()
-
-# create image driver
-driver = gdal.GetDriverByName('GTiff')
-# create destination for label file
-file = driver.Create(path_to_label_image,
-                     image_classified_label.shape[1],
-                     image_classified_label.shape[0],
-                     1,
-                     gdal.GDT_Byte,
-                     ['TFW=YES', 'NUM_THREADS=1'])
-file.SetGeoTransform(geotransform)
-file.SetProjection(image.GetProjection())
-# write label file
-file.GetRasterBand(1).WriteArray(image_classified_label)
-file = None
-# create destination for probability file
-file = driver.Create(path_to_prob_image,
-                     image_classified_prob.shape[1],
-                     image_classified_prob.shape[0],
-                     1,
-                     gdal.GDT_Float32,
-                     ['TFW=YES', 'NUM_THREADS=1'])
-file.SetGeoTransform(geotransform)
-file.SetProjection(image.GetProjection())
-# write label file
-file.GetRasterBand(1).WriteArray(image_classified_prob)
-file = None
-image = None
+# image_classified_prob = image_classified_prob[input_rows:num_rows-input_rows,
+#                                               input_cols:num_cols-input_cols, :]
+# image_classified_label = np.argmax(image_classified_prob, axis=-1)
+# image_classified_prob = np.sort(image_classified_prob, axis=-1)[..., -1]
+#
+# write image as Geotiff for correct georeferencing
+# read geotransformation
+# image = gdal.Open(path_to_image, gdal.GA_ReadOnly)
+# geotransform = image.GetGeoTransform()
+#
+# # create image driver
+# driver = gdal.GetDriverByName('GTiff')
+# # create destination for label file
+# file = driver.Create(path_to_label_image,
+#                      image_classified_label.shape[1],
+#                      image_classified_label.shape[0],
+#                      1,
+#                      gdal.GDT_Byte,
+#                      ['TFW=YES', 'NUM_THREADS=1'])
+# file.SetGeoTransform(geotransform)
+# file.SetProjection(image.GetProjection())
+# # write label file
+# file.GetRasterBand(1).WriteArray(image_classified_label)
+# file = None
+# # create destination for probability file
+# file = driver.Create(path_to_prob_image,
+#                      image_classified_prob.shape[1],
+#                      image_classified_prob.shape[0],
+#                      1,
+#                      gdal.GDT_Float32,
+#                      ['TFW=YES', 'NUM_THREADS=1'])
+# file.SetGeoTransform(geotransform)
+# file.SetProjection(image.GetProjection())
+# # write label file
+# file.GetRasterBand(1).WriteArray(image_classified_prob)
+# file = None
+# image = None
