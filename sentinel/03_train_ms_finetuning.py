@@ -27,6 +27,8 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 prefix = "/home/ubuntu/eurosat"
 
+print("loading data...")
+
 # Assuming your data is stored in x and y
 x = np.load(f"{prefix}/preprocessed/x_std.npy")
 y = np.load(f"{prefix}/preprocessed/y.npy")
@@ -35,13 +37,17 @@ y = np.load(f"{prefix}/preprocessed/y.npy")
 x = np.delete(x, 0, axis=3)
 x = np.delete(x, 9, axis=3)
 x = np.delete(x, 12, axis=3)
-x = np.delete(x, 13, axis=3)
-x = np.delete(x, 14, axis=3)
-x = np.delete(x, 15, axis=3)
-x = np.delete(x, 16, axis=3)
-x = np.delete(x, 17, axis=3)
-x = np.delete(x, 18, axis=3)
-x = np.delete(x, 19, axis=3)
+
+print(x.shape)
+# x = np.delete(x, 13, axis=3)
+# x = np.delete(x, 14, axis=3)
+# x = np.delete(x, 15, axis=3)
+# x = np.delete(x, 16, axis=3)
+# x = np.delete(x, 17, axis=3)
+# x = np.delete(x, 18, axis=3)
+# x = np.delete(x, 19, axis=3)
+
+assert x.shape[3] == 12
 
 x_train, x_test, y_train, y_test = train_test_split(
     x, y, test_size=0.2, random_state=42
@@ -71,6 +77,8 @@ num_classes = len(class_indices)
 # path_to_split_datasets = path_to_split_datasets.replace("~", path_to_home)
 # path_to_train = os.path.join(path_to_split_datasets, "train")
 # path_to_validation = os.path.join(path_to_split_datasets, "validation")
+
+print("configuring model...")
 
 # parameters for CNN
 input_tensor = Input(shape=(64, 64, 12))
@@ -144,6 +152,8 @@ for layer in base_model.layers:
 for layer in model.layers[:2]:
     layer.trainable = True
 
+print("compiling model...")
+
 # compile the model (should be done *after* setting layers to non-trainable)
 model.compile(
     optimizer="adam", loss="categorical_crossentropy", metrics=["categorical_accuracy"]
@@ -183,6 +193,8 @@ earlystopper = EarlyStopping(
     mode="max",
     restore_best_weights=True,
 )
+
+print("training first layers...")
 history = model.fit(
     datagen.flow(x_train, y_train, batch_size=batch_size),
     steps_per_epoch=len(x_train) // batch_size,
