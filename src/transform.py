@@ -5,6 +5,36 @@ import tensorflow as tf
 # Source folder
 src_folder = "/data/eurosat/data/testset/"
 
+def find_min_max_values(src_folder):
+    min_values = [np.inf, np.inf, np.inf]  # Initialize with "infinite" values
+    max_values = [
+        -np.inf,
+        -np.inf,
+        -np.inf,
+    ]  # Initialize with "negative infinite" values
+
+    for filename in os.listdir(src_folder):
+        if filename.endswith(".npy"):
+            # Load the image
+            multispectral_image = np.load(os.path.join(src_folder, filename))
+
+            # Reorder the channels to match the RGB order
+            rgb_image = multispectral_image[:, :, [3, 2, 1]]
+
+            # Update the min and max values for each band
+            for i in range(3):
+                min_values[i] = min(np.min(rgb_image[:, :, i]), min_values[i])
+                max_values[i] = max(np.max(rgb_image[:, :, i]), max_values[i])
+
+    return min_values, max_values
+
+
+min_values, max_values = find_min_max_values(src_folder)
+print("Min values for RGB bands: ", min_values)
+print("Max values for RGB bands: ", max_values)
+
+find_min_max_values(src_folder)
+
 def get_rgb_values(filename):
     # Load the image
     multispectral_image = np.load(os.path.join(src_folder, filename))
@@ -23,26 +53,51 @@ def get_rgb_values(filename):
 
     return normalized_image
 
-x_testset = []
+# def get_rgb_values(filename):
+#     # Load the image
+#     multispectral_image = np.load(os.path.join(src_folder, filename))
+#
+#     # Reorder the channels to match the RGB order (assuming 0-based indexing)
+#     rgb_image = multispectral_image[:, :, [3, 2, 1]]
+#
+#     # Define the min and max values for each band
+#     band_min_values = [0, 0, 0]  # replace with the actual min values
+#     band_max_values = [17826, 18894, 20506]  # replace with the actual max values
+#
+#     # Normalize the pixel values based on the predefined min and max values
+#     for i in range(3):
+#         rgb_image[:, :, i] = ((rgb_image[:, :, i] - band_min_values[i]) /
+#                               (band_max_values[i] - band_min_values[i])) * 255
+#
+#     # Convert the image array to 8-bit unsigned integers
+#     rgb_image = rgb_image.astype(np.uint8)
+#
+#     normalized_image = tf.keras.applications.resnet50.preprocess_input(rgb_image)
+#
+#     # return normalized_image, image
 
-# Loop over all files in the source folder
-for filename in os.listdir(src_folder):
-    # Check if the file is a .npy file
-    if filename.endswith(".npy"):
-        # Get the RGB values for the image
-        normalized_image = get_rgb_values(filename)
-
-        # Append the normalized image to x_testset list
-        x_testset.append(normalized_image)
 
 
-# Convert the list of images to a numpy array
-x_testset = np.array(x_testset)
-
-# Save the resulting array
-np.save('/data/eurosat/data/preprocessed/x_rgb.npy', x_testset)
-
-print(f'testset shape: {x_testset.shape}')
+# x_testset = []
+#
+# # Loop over all files in the source folder
+# for filename in os.listdir(src_folder):
+#     # Check if the file is a .npy file
+#     if filename.endswith(".npy"):
+#         # Get the RGB values for the image
+#         normalized_image = get_rgb_values(filename)
+#
+#         # Append the normalized image to x_testset list
+#         x_testset.append(normalized_image)
+#
+#
+# # Convert the list of images to a numpy array
+# x_testset = np.array(x_testset)
+#
+# # Save the resulting array
+# np.save('/data/eurosat/data/preprocessed/x_rgb.npy', x_testset)
+#
+# print(f'testset shape: {x_testset.shape}')
 
 # ------------------------------------------------------------
 

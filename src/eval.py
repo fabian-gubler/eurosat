@@ -5,10 +5,11 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 from tensorflow.keras.models import load_model
+from tqdm import tqdm
 
 # Load your trained model
-name = "/data/eurosat/models/efficientnet"
-model = load_model(name)
+path = "/data/eurosat/models/efficientnet"
+model = load_model(path)
 
 # Directory containing .npy test files
 # test_dir = "/home/ubuntu/eurosat/data/testset"
@@ -37,27 +38,33 @@ classes = [
 
 # Counter for files with values exceeding 4095
 exceeding_files = 0
+counter = 0
 
 # Loop over the test files
-for i, file in enumerate(test_files):
+for i, file in tqdm(enumerate(test_files), total=len(test_files), desc="Predicting"):
+
+    # Look at first 10 files
+    # if counter > 10:
+    #     break
+
     # Load the multispectral image
     multispectral_image = np.load(os.path.join(test_dir, file))
 
     # Extract and normalize the RGB bands
-    # rgb_image = multispectral_image[:, :, [3, 2, 1]]  # Extract RGB bands
-    rgb_image = multispectral_image[:, :, [1, 2, 3]]  # Extract RGB bands
-    rgb_image = rgb_image / 4095.0  # Normalize using the given maximum value
-    rgb_image = np.clip(rgb_image, 0, 1)  # Clip the values to the range [0, 1]
+    image = multispectral_image[:, :, [3, 2, 1]]  # Extract RGB bands
+    image = image / 4095.0  # Normalize using the given maximum value
 
+    image = np.clip(image, 0, 1)  # Clip the values to the range [0, 1]
 
-    # Ensure the image is of the correct size (adjust dimensions as necessary)
-    rgb_image = tf.image.resize(rgb_image, [64, 64])
+    # Make it same format as training data
+    image = tf.image.convert_image_dtype(image, tf.float32)
+    image = tf.image.rot90(image)
 
     # Add an extra dimension because the model expects a batch
-    rgb_image = np.expand_dims(rgb_image, axis=0)
+    image = np.expand_dims(image, axis=0)
 
     # Make prediction
-    prediction = model.predict(rgb_image)
+    prediction = model.predict(image, verbose=0)
 
     # Convert prediction probabilities to class label
     predicted_class = np.argmax(prediction, axis=1)
@@ -66,8 +73,9 @@ for i, file in enumerate(test_files):
     predictions[i] = predicted_class
 
     # Visualize the RGB image
-    plt.imshow(rgb_image)
-    plt.title(f'Predicted class: {predicted_class}')
+    predicted_class_name = [classes[i] for i in predicted_class]
+    plt.imshow(image[0])
+    plt.title(f'Predicted class: {predicted_class_name}')
     plt.show()
 
 
@@ -81,6 +89,5 @@ df = pd.DataFrame(
         "label": predicted_class_names,
     }
 )
-
 # Save the DataFrame to a CSV file
-df.to_csv(name + ".csv", index=False)
+df.to_csv("efficientnet.csv", index=False)

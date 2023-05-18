@@ -56,9 +56,9 @@
             # pythonPackages.openpyxl
             pythonPackages.scikit-learn
             # pythonPackages.scipy
-            # pythonPackages.scikitimage
+            pythonPackages.scikitimage
             # pythonPackages.seaborn
-            # pythonPackages.rasterio
+            pythonPackages.rasterio
 
             ## Jupyter notebook essentials
             pythonPackages.jupytext
@@ -85,6 +85,7 @@
 			# pkgs.zsh
 
             # Needed for Cuda Toolkit to work
+			pkgs.csvdiff
             # pkgs.cudatoolkit 
             # pkgs.linuxPackages.nvidia_x11
             # pkgs.cudaPackages.cudnn
