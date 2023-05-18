@@ -106,6 +106,8 @@ history = model.fit(ds_train, validation_data=ds_test, epochs=50,
 
 # -
 
+model.save('models\efficientnet_finetuned')
+
 test_loss, test_acc = model.evaluate(ds_test, verbose=1)
 
 # +
@@ -145,4 +147,3 @@ classes = ds_info.features['label'].names
 # plot_confusion_matrix(labels, predictions, classes, normalize=True)
 # -
 
-model.save('models\efficientnet_finetuned')

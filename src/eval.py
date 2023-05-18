@@ -7,12 +7,12 @@ import tensorflow as tf
 from tensorflow.keras.models import load_model
 
 # Load your trained model
-name = "/data/eurosat/models/efficientnet"
+name = "efficientnet"
 model = load_model(name)
 
 # Directory containing .npy test files
 # test_dir = "/home/ubuntu/eurosat/data/testset"
-test_dir = "/data/eurosat/data/testset"
+test_dir = "/home/ubuntu/eurosat/data/testset"
 
 # Get a list of all .npy files in the directory
 test_files = [f for f in os.listdir(test_dir) if f.endswith(".npy")]
@@ -66,9 +66,9 @@ for i, file in enumerate(test_files):
     predictions[i] = predicted_class
 
     # Visualize the RGB image
-    plt.imshow(rgb_image)
-    plt.title(f'Predicted class: {predicted_class}')
-    plt.show()
+    # plt.imshow(rgb_image)
+    # plt.title(f'Predicted class: {predicted_class}')
+    # plt.show()
 
 
 # Map the class indices to actual class names
