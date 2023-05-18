@@ -59,7 +59,7 @@ print(f"x initial: {x.shape}")
 # B1, B2, B3, B4 ,B5, B6, B7, B8, B8A, B9, B11, B12
 # 00, 01, 02, 03, 04, 05, 06, 07, 08, 09, 010, 011
 
-# Best: NDBI, NDMI
+# TODO - Best: NDBI, NDMI
 
 # NDVI, NDWI, NDBI, NDSI, SAVI, MNDWI
 # 012,  013,  014,  015,  016,  017

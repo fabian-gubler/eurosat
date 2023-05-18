@@ -21,7 +21,7 @@ def preprocessing_image_rgb(x):
 
 def preprocessing_image_ms(x):
     # define mean and std values
-    x = x.astype(np.float64)  # convert to float64 before subtracting
+    # x = x.astype(np.float64)  # convert to float64 before subtracting
     mean = [1353.036, 1116.468, 1041.475, 945.344, 1198.498, 2004.878,
             2376.699, 2303.738, 732.957, 12.092, 1818.820, 1116.271, 2602.579]
     std = [65.479, 154.008, 187.997, 278.508, 228.122, 356.598, 456.035,
