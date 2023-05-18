@@ -20,7 +20,7 @@ import os
 
 
 # input files
-path_to_image = "../data/testset/test_0.npy"
+path_to_image = "../data/testset_tiff/test_0.tif"
 path_to_model = "../data/models/vgg_rgb_transfer_final.56.hdf5"
 
 # output files
