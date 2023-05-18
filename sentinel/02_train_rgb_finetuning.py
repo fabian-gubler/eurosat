@@ -104,9 +104,9 @@ for layer in base_model.layers:
 
 # compile the model (should be done *after* setting layers to non-trainable)
 model.compile(optimizer='adadelta', loss='categorical_crossentropy',
-              metrics=['categorical_accuracy'])
+              metrics=['accuracy'])
 
-# generate callback to save best model w.r.t val_categorical_accuracy
+# generate callback to save best model w.r.t val_accuracy
 if use_vgg:
     file_name = "vgg"
 else:
@@ -116,12 +116,12 @@ checkpointer = ModelCheckpoint("../data/models/" + file_name +
                                "_rgb_transfer_init." +
                                "{epoch:02d}" +
                                "hdf5",
-                               monitor='val_categorical_accuracy',
+                               monitor='val_accuracy',
                                verbose=1,
                                save_best_only=True,
                                mode='max')
 
-earlystopper = EarlyStopping(monitor='categorical_accuracy',
+earlystopper = EarlyStopping(monitor='accuracy',
                              patience=10,
                              mode='max',
                              restore_best_weights=True)
@@ -166,9 +166,9 @@ else:
 # we use SGD with a low learning rate
 model.compile(optimizer=SGD(lr=0.0001, momentum=0.9),
               loss='categorical_crossentropy',
-              metrics=['categorical_accuracy'])
+              metrics=['accuracy'])
 
-# generate callback to save best model w.r.t val_categorical_accuracy
+# generate callback to save best model w.r.t val_accuracy
 if use_vgg:
     file_name = "vgg"
 else:
@@ -177,11 +177,11 @@ checkpointer = ModelCheckpoint("../data/models/" + file_name +
                                "_rgb_transfer_final." +
                                "{epoch:02d}" +
                                ".hdf5",
-                               monitor='val_categorical_accuracy',
+                               monitor='val_accuracy',
                                verbose=1,
                                save_best_only=True,
                                mode='max')
-earlystopper = EarlyStopping(monitor='categorical_accuracy',
+earlystopper = EarlyStopping(monitor='accuracy',
                              patience=50,
                              mode='max')
 model.fit(
