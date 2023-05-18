@@ -121,7 +121,7 @@ checkpointer = ModelCheckpoint("../data/models/" + file_name +
                                save_best_only=True,
                                mode='max')
 
-earlystopper = EarlyStopping(monitor='accuracy',
+earlystopper = EarlyStopping(monitor='val_accuracy',
                              patience=10,
                              mode='max',
                              restore_best_weights=True)
@@ -181,7 +181,7 @@ checkpointer = ModelCheckpoint("../data/models/" + file_name +
                                verbose=1,
                                save_best_only=True,
                                mode='max')
-earlystopper = EarlyStopping(monitor='accuracy',
+earlystopper = EarlyStopping(monitor='val_accuracy',
                              patience=50,
                              mode='max')
 model.fit(
