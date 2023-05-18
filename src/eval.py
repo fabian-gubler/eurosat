@@ -8,12 +8,12 @@ from tensorflow.keras.models import load_model
 from tqdm import tqdm
 
 # Load your trained model
-path = "/data/eurosat/models/efficientnet"
-model = load_model(path)
+name = "efficientnet"
+model = load_model(name)
 
 # Directory containing .npy test files
 # test_dir = "/home/ubuntu/eurosat/data/testset"
-test_dir = "/data/eurosat/data/testset"
+test_dir = "/home/ubuntu/eurosat/data/testset"
 
 # Get a list of all .npy files in the directory
 test_files = [f for f in os.listdir(test_dir) if f.endswith(".npy")]
