@@ -2,11 +2,13 @@ import os
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 
 # Load your trained model
-model = load_model('models/efficientnet_finetuned')
+name = "/data/eurosat/models/efficientnet"
+model = load_model(name)
 
 # Directory containing .npy test files
 # test_dir = "/home/ubuntu/eurosat/data/testset"
@@ -17,6 +19,21 @@ test_files = [f for f in os.listdir(test_dir) if f.endswith(".npy")]
 
 # Preallocate a numpy array for your predictions
 predictions = np.zeros(len(test_files), dtype=int)
+
+# Define the classes
+classes = [
+    "AnnualCrop",
+    "Forest",
+    "HerbaceousVegetation",
+    "Highway",
+    "Industrial",
+    "Pasture",
+    "PermanentCrop",
+    "Residential",
+    "River",
+    "SeaLake",
+]
+
 
 # Counter for files with values exceeding 4095
 exceeding_files = 0
@@ -32,21 +49,6 @@ for i, file in enumerate(test_files):
     rgb_image = rgb_image / 4095.0  # Normalize using the given maximum value
     rgb_image = np.clip(rgb_image, 0, 1)  # Clip the values to the range [0, 1]
 
-    # Check if any value in the RGB bands exceeds 4095
-    if np.max(rgb_image) > 4095:
-        exceeding_files += 1
-
-        # Normalize the pixel values based on ImageNet mean and standard deviation
-    # rgb_image = ((rgb_image - np.min(rgb_image, axis=(0, 1))) /
-    #                     (np.max(rgb_image, axis=(0, 1)) - np.min(rgb_image, axis=(0, 1)))) * 255
-
-    # Convert the image array to 8-bit unsigned integers
-    # rgb_image = rgb_image.astype(np.uint8)
-
-    # Visualize the RGB image
-    # plt.imshow(rgb_image)
-    # plt.title(file)  # Show the file name as title
-    # plt.show()
 
     # Ensure the image is of the correct size (adjust dimensions as necessary)
     rgb_image = tf.image.resize(rgb_image, [64, 64])
@@ -63,5 +65,22 @@ for i, file in enumerate(test_files):
     # Store the prediction
     predictions[i] = predicted_class
 
-# At this point, 'predictions' contains the predicted class for each .npy file
-print(f"Number of files with RGB values exceeding 4095: {exceeding_files}")
+    # Visualize the RGB image
+    plt.imshow(rgb_image)
+    plt.title(f'Predicted class: {predicted_class}')
+    plt.show()
+
+
+# Map the class indices to actual class names
+predicted_class_names = [classes[i] for i in predictions]
+
+# Create a DataFrame for the test IDs and their predicted labels
+df = pd.DataFrame(
+    data={
+        "test_id": np.arange(len(predicted_class_names)),
+        "label": predicted_class_names,
+    }
+)
+
+# Save the DataFrame to a CSV file
+df.to_csv(name + ".csv", index=False)
