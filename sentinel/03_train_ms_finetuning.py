@@ -44,9 +44,9 @@ print(f'x initial: {x.shape}')
 # x = np.delete(x, 13, axis=3)
 # x = np.delete(x, 14, axis=3)
 
-x = np.delete(x, 18, axis=3)
+# x = np.delete(x, 18, axis=3)
 x = np.delete(x, 17, axis=3)
-x = np.delete(x, 16, axis=3)
+# x = np.delete(x, 16, axis=3)
 x = np.delete(x, 15, axis=3)
 x = np.delete(x, 14, axis=3)
 x = np.delete(x, 13, axis=3)
@@ -90,7 +90,7 @@ num_classes = len(class_indices)
 print("configuring model...")
 
 # parameters for CNN
-input_layer = Input(shape=(64, 64, 11))
+input_layer = Input(shape=(64, 64, 13))
 # introduce a additional layer to get from 13 to 3 input channels
 input_tensor = Conv2D(3, (1, 1))(input_tensor)
 if use_vgg:
