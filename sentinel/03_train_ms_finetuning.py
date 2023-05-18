@@ -25,7 +25,7 @@ from tensorflow.keras.optimizers import SGD
 
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
-prefix = "/home/ubuntu/"
+prefix = "/home/ubuntu"
 
 # Assuming your data is stored in x and y
 x = np.load(f"{prefix}/preprocessed/x_std.npy")
