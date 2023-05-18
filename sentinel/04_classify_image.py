@@ -16,18 +16,26 @@ from skimage.io import imread
 from skimage.util import pad
 from tensorflow.keras.models import load_model
 from tqdm import tqdm
+import os
 
 
 # input files
-path_to_image = "../data/karlsruhe/2018_zugeschnitten.tif"
+path_to_image = "../data/testset/test_0.npy"
 path_to_model = "../data/models/vgg/vgg_ms_transfer_alternative_final.27-0.985.hdf5"
 
 # output files
-path_to_label_image = "../data/karlsruhe/2018_zugeschnitten_10m_vgg_ms_label.tif"
-path_to_prob_image = "../data/karlsruhe/2018_zugeschnitten_10m_vgg_ms_prob.tif"
+label_dir = "../data/labels/"
+path_to_label_image = os.path.join(label_dir, "test_0_label.tif")
+path_to_prob_image = os.path.join(label_dir, "test_0_prob.tif")
+
+os.makedirs(label_dir, exist_ok=True)
 
 # read image and model
-image = np.array(imread(path_to_image), dtype=float)
+if path_to_image.endswith('.npy'):
+    image = np.load(path_to_image)
+else:
+    image = np.array(imread(path_to_image), dtype=float)
+
 _, num_cols_unpadded, _ = image.shape
 model = load_model(path_to_model)
 # get input shape of model

@@ -23,7 +23,7 @@ from tensorflow.keras.optimizers import SGD
 from image_functions import simple_image_generator
 
 # variables
-path_to_split_datasets = "/data/eurosat/data/AllBands"
+path_to_split_datasets = "../data/AllBands"
 use_vgg = False
 batch_size = 64
 
