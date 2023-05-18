@@ -34,7 +34,7 @@ from image_functions import preprocessing_image_rgb
 
 # +
 # variables
-path_to_split_datasets = "/data/eurosat/data/AllRGB"
+path_to_split_datasets = "../data/AllRGB"
 use_vgg = True
 batch_size = 64
 
