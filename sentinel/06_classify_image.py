@@ -9,7 +9,6 @@ sensing research with open data and Python.
 License: MIT
 
 """
-import gdal
 import numpy as np
 from skimage.io import imread
 from tensorflow.keras.models import load_model
@@ -27,14 +26,15 @@ path_to_prob_image = "../data/karlsruhe/2018_zugeschnitten_10m_vgg_ms_prob.tif"
 image = np.array(imread(path_to_image), dtype=float)
 _, num_cols_unpadded, _ = image.shape
 model = load_model(path_to_model)
+print("Input shape of first layer:", model.layers[0].input_shape)
 # get input shape of model
-_, input_rows, input_cols, input_channels = model.layers[0].input_shape
+_, input_rows, input_cols, input_channels = model.layers[0].input_shape[0]
 _, output_classes = model.layers[-1].output_shape
 in_rows_half = int(input_rows/2)
 in_cols_half = int(input_cols/2)
 
 # import correct preprocessing
-if input_channels is 3:
+if input_channels == 3:
     from image_functions import preprocessing_image_rgb as preprocessing_image
 else:
     from image_functions import preprocessing_image_ms as preprocessing_image
@@ -69,35 +69,35 @@ image_classified_prob = image_classified_prob[input_rows:num_rows-input_rows,
 image_classified_label = np.argmax(image_classified_prob, axis=-1)
 image_classified_prob = np.sort(image_classified_prob, axis=-1)[..., -1]
 
-# write image as Geotiff for correct georeferencing
-# read geotransformation
-image = gdal.Open(path_to_image, gdal.GA_ReadOnly)
-geotransform = image.GetGeoTransform()
-
-# create image driver
-driver = gdal.GetDriverByName('GTiff')
-# create destination for label file
-file = driver.Create(path_to_label_image,
-                     image_classified_label.shape[1],
-                     image_classified_label.shape[0],
-                     1,
-                     gdal.GDT_Byte,
-                     ['TFW=YES', 'NUM_THREADS=1'])
-file.SetGeoTransform(geotransform)
-file.SetProjection(image.GetProjection())
-# write label file
-file.GetRasterBand(1).WriteArray(image_classified_label)
-file = None
-# create destination for probability file
-file = driver.Create(path_to_prob_image,
-                     image_classified_prob.shape[1],
-                     image_classified_prob.shape[0],
-                     1,
-                     gdal.GDT_Float32,
-                     ['TFW=YES', 'NUM_THREADS=1'])
-file.SetGeoTransform(geotransform)
-file.SetProjection(image.GetProjection())
-# write label file
-file.GetRasterBand(1).WriteArray(image_classified_prob)
-file = None
-image = None
+# # write image as Geotiff for correct georeferencing
+# # read geotransformation
+# image = gdal.Open(path_to_image, gdal.GA_ReadOnly)
+# geotransform = image.GetGeoTransform()
+#
+# # create image driver
+# driver = gdal.GetDriverByName('GTiff')
+# # create destination for label file
+# file = driver.Create(path_to_label_image,
+#                      image_classified_label.shape[1],
+#                      image_classified_label.shape[0],
+#                      1,
+#                      gdal.GDT_Byte,
+#                      ['TFW=YES', 'NUM_THREADS=1'])
+# file.SetGeoTransform(geotransform)
+# file.SetProjection(image.GetProjection())
+# # write label file
+# file.GetRasterBand(1).WriteArray(image_classified_label)
+# file = None
+# # create destination for probability file
+# file = driver.Create(path_to_prob_image,
+#                      image_classified_prob.shape[1],
+#                      image_classified_prob.shape[0],
+#                      1,
+#                      gdal.GDT_Float32,
+#                      ['TFW=YES', 'NUM_THREADS=1'])
+# file.SetGeoTransform(geotransform)
+# file.SetProjection(image.GetProjection())
+# # write label file
+# file.GetRasterBand(1).WriteArray(image_classified_prob)
+# file = None
+# image = None
