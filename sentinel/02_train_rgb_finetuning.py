@@ -18,7 +18,6 @@ from tensorflow.keras.callbacks import (EarlyStopping, ModelCheckpoint,
 from tensorflow.keras.layers import Dense, GlobalAveragePooling2D
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import SGD
-from tensorflow.keras.metrics import categorical_accuracy
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 from image_functions import preprocessing_image_rgb
@@ -105,7 +104,7 @@ for layer in base_model.layers:
 
 # compile the model (should be done *after* setting layers to non-trainable)
 model.compile(optimizer='adadelta', loss='categorical_crossentropy',
-              metrics=['categorical_accuracy'])
+              metrics=['accuracy'])
 
 # generate callback to save best model w.r.t val_categorical_accuracy
 if use_vgg:
@@ -115,14 +114,14 @@ else:
 
 checkpointer = ModelCheckpoint("../data/models/" + file_name +
                                "_rgb_transfer_init." +
-                               "{epoch:02d}-{categorical_accuracy:.3f}." +
+                               "{epoch:02d}-{val_accuracy:.3f}." +
                                "hdf5",
-                               monitor='val_categorical_accuracy',
+                               monitor='val__accuracy',
                                verbose=1,
                                save_best_only=True,
                                mode='max')
 
-earlystopper = EarlyStopping(monitor='val_categorical_accuracy',
+earlystopper = EarlyStopping(monitor='val_accuracy',
                              patience=10,
                              mode='max',
                              restore_best_weights=True)
@@ -167,7 +166,7 @@ else:
 # we use SGD with a low learning rate
 model.compile(optimizer=SGD(lr=0.0001, momentum=0.9),
               loss='categorical_crossentropy',
-              metrics=['categorical_accuracy'])
+              metrics=['accuracy'])
 
 # generate callback to save best model w.r.t val_categorical_accuracy
 if use_vgg:
@@ -176,13 +175,13 @@ else:
     file_name = "dense"
 checkpointer = ModelCheckpoint("../data/models/" + file_name +
                                "_rgb_transfer_final." +
-                               "{epoch:02d}-{categorical_accuracy:.3f}" +
+                               "{epoch:02d}-{val_accuracy:.3f}" +
                                ".hdf5",
-                               monitor='val_categorical_accuracy',
+                               monitor='val_accuracy',
                                verbose=1,
                                save_best_only=True,
                                mode='max')
-earlystopper = EarlyStopping(monitor='val_categorical_accuracy',
+earlystopper = EarlyStopping(monitor='val_accuracy',
                              patience=50,
                              mode='max')
 model.fit(
