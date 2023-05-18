@@ -17,7 +17,7 @@ if not os.path.exists("../data/output"):
 path_to_output_csv = "../data/output/predictions.csv"
 
 # load model
-path_to_model = "../data/models/vgg/vgg_ms_transfer_alternative_final.27-0.985.hdf5"
+path_to_model = "../data/models/dense_ms_transfer_final.32-0.941.hdf5"
 model = load_model(path_to_model)
 
 # Define the classes
@@ -45,7 +45,7 @@ bands_to_remove = [0, 9, 12, 13, 15, 16, 17]
 x_test = np.delete(x_test, bands_to_remove, axis=3)
 
 # preprocess the entire test set
-x_test = preprocessing_image(x_test)
+# x_test = preprocessing_image(x_test)
 
 print("predicting...")
 
