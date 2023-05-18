@@ -114,14 +114,14 @@ else:
 
 checkpointer = ModelCheckpoint("../data/models/" + file_name +
                                "_rgb_transfer_init." +
-                               "{epoch:02d}-{val_accuracy:.3f}." +
+                               "{epoch:02d}-{val_categorical_accuracy:.3f}." +
                                "hdf5",
-                               monitor='val_accuracy',
+                               monitor='val_categorical_accuracy',
                                verbose=1,
                                save_best_only=True,
                                mode='max')
 
-earlystopper = EarlyStopping(monitor='val_accuracy',
+earlystopper = EarlyStopping(monitor='val_categorical_accuracy',
                              patience=10,
                              mode='max',
                              restore_best_weights=True)
@@ -136,7 +136,7 @@ history = model.fit(
     callbacks=[checkpointer, earlystopper,
                 tensorboard],
     validation_data=validation_generator,
-    validation_steps=500)
+    validation_steps=50)
 initial_epoch = len(history.history['loss'])+1
 # at this point, the top layers are well trained and we can start fine-tuning
 # convolutional layers. We will freeze the bottom N layers
@@ -175,13 +175,13 @@ else:
     file_name = "dense"
 checkpointer = ModelCheckpoint("../data/models/" + file_name +
                                "_rgb_transfer_final." +
-                               "{epoch:02d}-{val_accuracy:.3f}" +
+                               "{epoch:02d}-{val_categorical_accuracy:.3f}" +
                                ".hdf5",
-                               monitor='val_accuracy',
+                               monitor='val_categorical_accuracy',
                                verbose=1,
                                save_best_only=True,
                                mode='max')
-earlystopper = EarlyStopping(monitor='val_accuracy',
+earlystopper = EarlyStopping(monitor='val_categorical_accuracy',
                              patience=50,
                              mode='max')
 model.fit(
@@ -190,5 +190,5 @@ model.fit(
     epochs=10000,
     callbacks=[checkpointer, earlystopper, tensorboard],
     validation_data=validation_generator,
-    validation_steps=500,
+    validation_steps=50,
     initial_epoch=initial_epoch)
