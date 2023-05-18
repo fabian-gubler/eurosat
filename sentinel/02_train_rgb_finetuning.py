@@ -114,7 +114,7 @@ else:
 
 checkpointer = ModelCheckpoint("../data/models/" + file_name +
                                "_rgb_transfer_init." +
-                               "{epoch:02d}-{val_categorical_accuracy:.3f}." +
+                               "{epoch:02d}" +
                                "hdf5",
                                monitor='val_categorical_accuracy',
                                verbose=1,
@@ -166,7 +166,7 @@ else:
 # we use SGD with a low learning rate
 model.compile(optimizer=SGD(lr=0.0001, momentum=0.9),
               loss='categorical_crossentropy',
-              metrics=['accuracy'])
+              metrics=['categorical_accuracy'])
 
 # generate callback to save best model w.r.t val_categorical_accuracy
 if use_vgg:
@@ -175,13 +175,13 @@ else:
     file_name = "dense"
 checkpointer = ModelCheckpoint("../data/models/" + file_name +
                                "_rgb_transfer_final." +
-                               "{epoch:02d}-{val_accuracy:.3f}" +
+                               "{epoch:02d}" +
                                ".hdf5",
-                               monitor='val_accuracy',
+                               monitor='val_categorical_accuracy',
                                verbose=1,
                                save_best_only=True,
                                mode='max')
-earlystopper = EarlyStopping(monitor='val_accuracy',
+earlystopper = EarlyStopping(monitor='val_categorical_accuracy',
                              patience=50,
                              mode='max')
 model.fit(
