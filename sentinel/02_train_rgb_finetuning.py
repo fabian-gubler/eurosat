@@ -18,6 +18,7 @@ from tensorflow.keras.callbacks import (EarlyStopping, ModelCheckpoint,
 from tensorflow.keras.layers import Dense, GlobalAveragePooling2D
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import SGD
+from tensorflow.keras.metrics import categorical_accuracy
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 from image_functions import preprocessing_image_rgb
@@ -104,9 +105,9 @@ for layer in base_model.layers:
 
 # compile the model (should be done *after* setting layers to non-trainable)
 model.compile(optimizer='adadelta', loss='categorical_crossentropy',
-              metrics=['accuracy'])
+              metrics=['categorical_accuracy'])
 
-# generate callback to save best model w.r.t val_accuracy
+# generate callback to save best model w.r.t val_categorical_accuracy
 if use_vgg:
     file_name = "vgg"
 else:
@@ -114,14 +115,14 @@ else:
 
 checkpointer = ModelCheckpoint("../data/models/" + file_name +
                                "_rgb_transfer_init." +
-                               "{epoch:02d}" +
+                               "{epoch:02d}-{val_categorical_accuracy:.3f}." +
                                "hdf5",
-                               monitor='val_accuracy',
+                               monitor='val_categorical_accuracy',
                                verbose=1,
                                save_best_only=True,
                                mode='max')
 
-earlystopper = EarlyStopping(monitor='val_accuracy',
+earlystopper = EarlyStopping(monitor='val_categorical_accuracy',
                              patience=10,
                              mode='max',
                              restore_best_weights=True)
@@ -132,7 +133,7 @@ tensorboard = TensorBoard(log_dir='./logs', write_graph=True,
 history = model.fit(
     train_generator,
     steps_per_epoch=50,
-    epochs=100,
+    epochs=10000,
     callbacks=[checkpointer, earlystopper,
                 tensorboard],
     validation_data=validation_generator,
@@ -166,28 +167,28 @@ else:
 # we use SGD with a low learning rate
 model.compile(optimizer=SGD(lr=0.0001, momentum=0.9),
               loss='categorical_crossentropy',
-              metrics=['accuracy'])
+              metrics=['categorical_accuracy'])
 
-# generate callback to save best model w.r.t val_accuracy
+# generate callback to save best model w.r.t val_categorical_accuracy
 if use_vgg:
     file_name = "vgg"
 else:
     file_name = "dense"
 checkpointer = ModelCheckpoint("../data/models/" + file_name +
                                "_rgb_transfer_final." +
-                               "{epoch:02d}" +
+                               "{epoch:02d}-{val_categorical_accuracy:.3f}" +
                                ".hdf5",
-                               monitor='val_accuracy',
+                               monitor='val_categorical_accuracy',
                                verbose=1,
                                save_best_only=True,
                                mode='max')
-earlystopper = EarlyStopping(monitor='val_accuracy',
+earlystopper = EarlyStopping(monitor='val_categorical_accuracy',
                              patience=50,
                              mode='max')
 model.fit(
     train_generator,
     steps_per_epoch=50,
-    epochs=100,
+    epochs=10000,
     callbacks=[checkpointer, earlystopper, tensorboard],
     validation_data=validation_generator,
     validation_steps=500,
