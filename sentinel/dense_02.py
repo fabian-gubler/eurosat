@@ -67,7 +67,7 @@ x_train, x_test, y_train, y_test = train_test_split(
 print("configuring model...")
 
 # parameters for CNN
-input_tensor = Input(shape=(64, 64, 14))
+input_tensor = Input(shape=(64, 64, 12))
 # introduce a additional layer to get from 13 to 3 input channels
 input_tensor = Conv2D(3, (1, 1))(input_tensor)
 if use_vgg:
