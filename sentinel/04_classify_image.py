@@ -20,7 +20,7 @@ import os
 
 
 # input files
-path_to_image = "../data/testset_tiff/test_0.tif"
+path_to_image = "../data/testset/test_0.npy"
 path_to_model = "../data/models/vgg_rgb_transfer_final.56.hdf5"
 
 # output files
@@ -39,7 +39,10 @@ else:
 _, num_cols_unpadded, _ = image.shape
 model = load_model(path_to_model)
 # get input shape of model
-_, input_rows, input_cols, input_channels = model.layers[0].input_shape
+# _, input_rows, input_cols, input_channels = model.layers[0].input_shape
+input_shape = model.layers[0].input_shape
+input_rows, input_cols, input_channels = input_shape[1:]
+
 _, output_classes = model.layers[-1].output_shape
 in_rows_half = int(input_rows/2)
 in_cols_half = int(input_cols/2)
