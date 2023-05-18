@@ -135,7 +135,7 @@ tensorboard = TensorBoard(
 history = model.fit(
     train_generator,
     steps_per_epoch=50,
-    epochs=10000,
+    epochs=100,
     callbacks=[
         # checkpointer,
         # earlystopper,
@@ -199,7 +199,7 @@ earlystopper = EarlyStopping(
 model.fit(
     train_generator,
     steps_per_epoch=50,
-    epochs=10000,
+    epochs=100,
     callbacks=[
         # checkpointer, 
         # earlystopper, 
