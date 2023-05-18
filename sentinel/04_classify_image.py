@@ -13,7 +13,7 @@ License: MIT
 # import gdal
 import numpy as np
 from skimage.io import imread
-from skimage.util import pad
+# from skimage.util import pad
 from tensorflow.keras.models import load_model
 from tqdm import tqdm
 import os
@@ -21,7 +21,7 @@ import os
 
 # input files
 path_to_image = "../data/testset/test_0.npy"
-path_to_model = "../data/models/vgg/vgg_ms_transfer_alternative_final.27-0.985.hdf5"
+path_to_model = "../data/models/vgg_rgb_transfer_final.56.hdf5"
 
 # output files
 label_dir = "../data/labels/"
@@ -51,7 +51,7 @@ else:
     from image_functions import preprocessing_image_ms as preprocessing_image
 
 # pad image
-image = pad(image, ((input_rows, input_rows),
+image = np.pad(image, ((input_rows, input_rows),
                     (input_cols, input_cols),
                     (0, 0)), 'symmetric')
 
