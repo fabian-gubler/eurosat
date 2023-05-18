@@ -16,16 +16,39 @@ from tensorflow.keras.applications.resnet50 import preprocess_input
 import tensorflow_datasets as tfds
 
 
-user = "ubuntu"
-
 print("loading data...")
 
-# Assuming your data is stored in x and y
-x = np.load(f"/home/{user}/eurosat/preprocessed/x_std.npy")
-y = np.load(f"/home/{user}/eurosat/preprocessed/y.npy")
+# user = "ubuntu"
+# y = np.load(f"/home/{user}/eurosat/preprocessed/y.npy")
 
-x_rgb = x[:,:,:, [3, 2, 1]].copy() # shape: (27000, 64, 64, 3)
+DATA_DIR = "../data"  # replace with your data directory
+ds, ds_info = tfds.load("eurosat/rgb", with_info=True, split="train", data_dir=DATA_DIR)
 
+def preprocess(features):
+    image = features["image"]
+    image = tf.image.convert_image_dtype(image, tf.float32)
+    image = tf.keras.applications.resnet50.preprocess_input(image)
+    return image, features["label"]
+
+ds = ds.map(preprocess)
+
+# Convert dataset to NumPy arrays
+images, labels = [], []
+for image, label in ds:
+    images.append(image.numpy())
+    labels.append(label.numpy())
+
+# x_rgb = np.stack(images)
+# print(x_rgb.shape)
+# print(x_rgb[0])
+#
+# y = tf.one_hot(labels, depth=ds_info.features['label'].num_classes).numpy()
+# print(y.shape)
+# print(y[0])
+
+y = np.load(f"/data/eurosat/data/preprocessed/y.npy")
+print(y.shape)
+print(y[0])
 
 
 # Split the dataset into train and test sets
@@ -77,7 +100,7 @@ datagen = ImageDataGenerator(
 )
 
 # Define the checkpoint callback
-checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(filepath='resnet50_std_rgb_only.h5', monitor='val_accuracy', mode='max', save_best_only=True, save_weights_only=False, verbose=1)
+checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(filepath='resnet50_std_wo_deeper_rgb.h5', monitor='val_accuracy', mode='max', save_best_only=True, save_weights_only=False, verbose=1)
 # Define the early stopping callback
 early_stopping_callback = tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', mode='max', patience=5, verbose=1, restore_best_weights=True)
 
