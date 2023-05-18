@@ -13,7 +13,6 @@ License: MIT
 # import gdal
 import numpy as np
 from skimage.io import imread
-# from skimage.util import pad
 from tensorflow.keras.models import load_model
 from tqdm import tqdm
 import os
@@ -39,10 +38,7 @@ else:
 _, num_cols_unpadded, _ = image.shape
 model = load_model(path_to_model)
 # get input shape of model
-# _, input_rows, input_cols, input_channels = model.layers[0].input_shape
-input_shape = model.layers[0].input_shape
-input_rows, input_cols, input_channels = input_shape[1:]
-
+_, input_rows, input_cols, input_channels = model.layers[0].input_shape
 _, output_classes = model.layers[-1].output_shape
 in_rows_half = int(input_rows/2)
 in_cols_half = int(input_cols/2)
