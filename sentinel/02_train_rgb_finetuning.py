@@ -122,7 +122,7 @@ checkpointer = ModelCheckpoint("../data/models/" + file_name +
                                mode='max')
 
 earlystopper = EarlyStopping(monitor='val_categorical_accuracy',
-                             patience=10,
+                             patience=5,
                              mode='max',
                              restore_best_weights=True)
 
@@ -138,6 +138,7 @@ history = model.fit(
     validation_data=validation_generator,
     validation_steps=50)
 initial_epoch = len(history.history['loss'])+1
+
 # at this point, the top layers are well trained and we can start fine-tuning
 # convolutional layers. We will freeze the bottom N layers
 # and train the remaining top layers.
@@ -182,7 +183,7 @@ checkpointer = ModelCheckpoint("../data/models/" + file_name +
                                save_best_only=True,
                                mode='max')
 earlystopper = EarlyStopping(monitor='val_categorical_accuracy',
-                             patience=50,
+                             patience=5,
                              mode='max')
 model.fit(
     train_generator,

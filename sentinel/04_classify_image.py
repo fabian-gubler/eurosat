@@ -1,113 +1,84 @@
-#~/Documents/Data/PyCon/AllBands!/usr/bin/env python3
-
-# -*- coding: utf-8 -*-
-"""
-Code for the PyCon.DE 2018 talk by Jens Leitloff and Felix M. Riese.
-
-PyCon 2018 talk: Satellite data is for everyone: insights into modern remote
-sensing research with open data and Python.
-
-License: MIT
-
-"""
-# import gdal
 import numpy as np
 from skimage.io import imread
 from tensorflow.keras.models import load_model
 from tqdm import tqdm
 import os
+import glob
+import pandas as pd
 
 
 # input files
-path_to_image = "../data/testset/test_0.npy"
+path_to_images = "../data/testset/"    # Folder with test images
 path_to_model = "../data/models/vgg_rgb_transfer_final.56.hdf5"
 
 # output files
-label_dir = "../data/labels/"
-path_to_label_image = os.path.join(label_dir, "test_0_label.tif")
-path_to_prob_image = os.path.join(label_dir, "test_0_prob.tif")
+path_to_output_csv = "../data/output/predictions.csv"
 
-os.makedirs(label_dir, exist_ok=True)
+# Create DataFrame to store results
+results_df = pd.DataFrame(columns=["Image", "Label", "Probability"])
 
-# read image and model
-if path_to_image.endswith('.npy'):
-    image = np.load(path_to_image)
-else:
-    image = np.array(imread(path_to_image), dtype=float)
-
-_, num_cols_unpadded, _ = image.shape
+# read model
 model = load_model(path_to_model)
-# get input shape of model
-_, input_rows, input_cols, input_channels = model.layers[0].input_shape
-_, output_classes = model.layers[-1].output_shape
-in_rows_half = int(input_rows/2)
-in_cols_half = int(input_cols/2)
 
-# import correct preprocessing
-if input_channels is 3:
-    from image_functions import preprocessing_image_rgb as preprocessing_image
-else:
-    from image_functions import preprocessing_image_ms as preprocessing_image
+# Iterate over each test image
+for path_to_image in glob.glob(os.path.join(path_to_images, '*.npy')):
 
-# pad image
-image = np.pad(image, ((input_rows, input_rows),
-                    (input_cols, input_cols),
-                    (0, 0)), 'symmetric')
+    # read image
+    if path_to_image.endswith('.npy'):
+        image = np.load(path_to_image)
+    else:
+        image = np.array(imread(path_to_image), dtype=float)
 
-# don't forget to preprocess
-image = preprocessing_image(image)
-num_rows, num_cols, _ = image.shape
+    _, num_cols_unpadded, _ = image.shape
 
-# sliding window over image
-image_classified_prob = np.zeros((num_rows, num_cols, output_classes))
-row_images = np.zeros((num_cols_unpadded, input_rows,
-                       input_cols, input_channels))
-for row in tqdm(range(input_rows, num_rows-input_rows), desc="Processing..."):
-    # get all images along one row
-    for idx, col in enumerate(range(input_cols, num_cols-input_cols)):
-        # cut smal image patch
-        row_images[idx, ...] = image[row-in_rows_half:row+in_rows_half,
-                                     col-in_cols_half:col+in_cols_half, :]
-    # classify images
-    row_classified = model.predict(row_images, batch_size=1024, verbose=0)
-    # put them to final image
-    image_classified_prob[row, input_cols:num_cols-input_cols, : ] = row_classified
+    # get input shape of model
+    _, input_rows, input_cols, input_channels = model.layers[0].input_shape
+    _, output_classes = model.layers[-1].output_shape
+    in_rows_half = int(input_rows/2)
+    in_cols_half = int(input_cols/2)
 
-# crop padded final image
-image_classified_prob = image_classified_prob[input_rows:num_rows-input_rows,
-                                              input_cols:num_cols-input_cols, :]
-image_classified_label = np.argmax(image_classified_prob, axis=-1)
-image_classified_prob = np.sort(image_classified_prob, axis=-1)[..., -1]
+    # import correct preprocessing
+    if input_channels is 3:
+        from image_functions import preprocessing_image_rgb as preprocessing_image
+    else:
+        from image_functions import preprocessing_image_ms as preprocessing_image
 
-# write image as Geotiff for correct georeferencing
-# read geotransformation
-# image = gdal.Open(path_to_image, gdal.GA_ReadOnly)
-# geotransform = image.GetGeoTransform()
-#
-# # create image driver
-# driver = gdal.GetDriverByName('GTiff')
-# # create destination for label file
-# file = driver.Create(path_to_label_image,
-#                      image_classified_label.shape[1],
-#                      image_classified_label.shape[0],
-#                      1,
-#                      gdal.GDT_Byte,
-#                      ['TFW=YES', 'NUM_THREADS=1'])
-# file.SetGeoTransform(geotransform)
-# file.SetProjection(image.GetProjection())
-# # write label file
-# file.GetRasterBand(1).WriteArray(image_classified_label)
-# file = None
-# # create destination for probability file
-# file = driver.Create(path_to_prob_image,
-#                      image_classified_prob.shape[1],
-#                      image_classified_prob.shape[0],
-#                      1,
-#                      gdal.GDT_Float32,
-#                      ['TFW=YES', 'NUM_THREADS=1'])
-# file.SetGeoTransform(geotransform)
-# file.SetProjection(image.GetProjection())
-# # write label file
-# file.GetRasterBand(1).WriteArray(image_classified_prob)
-# file = None
-# image = None
+    # pad image
+    image = np.pad(image, ((input_rows, input_rows),
+                        (input_cols, input_cols),
+                        (0, 0)), 'symmetric')
+
+    # don't forget to preprocess
+    image = preprocessing_image(image)
+    num_rows, num_cols, _ = image.shape
+
+    # sliding window over image
+    image_classified_prob = np.zeros((num_rows, num_cols, output_classes))
+    row_images = np.zeros((num_cols_unpadded, input_rows,
+                        input_cols, input_channels))
+    for row in tqdm(range(input_rows, num_rows-input_rows), desc="Processing..."):
+        # get all images along one row
+        for idx, col in enumerate(range(input_cols, num_cols-input_cols)):
+            # cut small image patch
+            row_images[idx, ...] = image[row-in_rows_half:row+in_rows_half,
+                                        col-in_cols_half:col+in_cols_half, :]
+        # classify images
+        row_classified = model.predict(row_images, batch_size=1024, verbose=0)
+        # put them to final image
+        image_classified_prob[row, input_cols:num_cols-input_cols, :] = row_classified
+
+    # crop padded final image
+    image_classified_prob = image_classified_prob[input_rows:num_rows-input_rows,
+                                                input_cols:num_cols-input_cols, :]
+    image_classified_label = np.argmax(image_classified_prob, axis=-1)
+    image_classified_prob = np.sort(image_classified_prob, axis=-1)[..., -1]
+
+    # Store image name, label and probability to the DataFrame
+    image_name = os.path.basename(path_to_image)
+    results_df = results_df.append({"Image": image_name, 
+                                    "Label": image_classified_label, 
+                                    "Probability": image_classified_prob}, 
+                                    ignore_index=True)
+
+# Save results to CSV
+results_df.to_csv(path_to_output_csv, index=False)
