@@ -90,7 +90,7 @@ num_classes = len(class_indices)
 print("configuring model...")
 
 # parameters for CNN
-input_layer = Input(shape=(64, 64, 13))
+input_tensor = Input(shape=(64, 64, 13))
 # introduce a additional layer to get from 13 to 3 input channels
 input_tensor = Conv2D(3, (1, 1))(input_tensor)
 if use_vgg:
